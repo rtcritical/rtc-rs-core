@@ -78,3 +78,10 @@ fn keys_vals_helpers_smoke() {
         panic!("expected map");
     }
 }
+
+
+#[test]
+fn keys_helper_builds_path_keys() {
+    let p = path!["cfg", "http", "port"];
+    assert_eq!(p.len(), 3);
+}

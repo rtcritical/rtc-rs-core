@@ -56,3 +56,14 @@ Payload shape (conceptual):
 
 ## Compatibility Statement
 This extension is additive and does not modify nucleus types/semantics/status taxonomy.
+
+
+## Future Extension Note: Generic Map Keys
+A future extension may introduce generic map-key support (`(Value, Value)` pairs) without changing frozen nucleus behavior.
+
+Compatibility strategy:
+- Keep nucleus/public v0 API semantics string-key-first for JSON-compatible object behavior.
+- Introduce generic-key map as an additive extension namespace/type in v1+.
+- Preserve existing APIs; add opt-in extension APIs rather than mutating current signatures.
+
+This provides a migration path to richer key types without breaking current API contracts.

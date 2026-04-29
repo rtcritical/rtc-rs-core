@@ -48,7 +48,7 @@ fn constructor_helpers_smoke() {
     assert_eq!(st("x"), Value::Str("x".into()));
     assert_eq!(v!(), Value::Vec(vec![]));
     assert_eq!(v_from(vec![i(1)]), Value::Vec(vec![Value::I64(1)]));
-    assert_eq!(m(), m());
+    assert_eq!(m(), Value::Map(vec![]));
     assert_eq!(m_from(vec![("k", i(1))]), Value::Map(vec![("k".into(), Value::I64(1))]));
     assert_eq!(s!(), Value::Vec(vec![]));
     assert_eq!(s_from(vec![i(2)]), Value::Vec(vec![Value::I64(2)]));

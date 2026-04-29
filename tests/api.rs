@@ -4,7 +4,7 @@ use rtc_rs_core::{path, path_mixed};
 
 fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {
     Ok(match v {
-        Value::Nil => Value::I64(1),
+        Value::Nil => i(1),
         Value::I64(n) => Value::I64(n + 1),
         _ => Value::Nil,
     })
@@ -13,9 +13,9 @@ fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {
 #[test]
 fn short_str_path_helpers_work() {
     let root = Value::Map(vec![]);
-    let r1 = assoc_in(&root, &["cfg", "http", "port"], Value::I64(8080)).unwrap();
+    let r1 = assoc_in(&root, &["cfg", "http", "port"], i(8080)).unwrap();
     let got = get_in(&r1, &["cfg", "http", "port"]).unwrap();
-    assert_eq!(got, Value::I64(8080));
+    assert_eq!(got, i(8080));
 }
 
 #[test]
@@ -35,7 +35,7 @@ fn update_in_str_nil_semantics() {
     let root = Value::Map(vec![]);
     let out = update_in(&root, &["cfg", "port"], inc_nil).unwrap();
     let got = get_in(&out, &["cfg", "port"]).unwrap();
-    assert_eq!(got, Value::I64(1));
+    assert_eq!(got, i(1));
 }
 
 

@@ -1,5 +1,5 @@
 use rtc_rs_core::core::Value;
-use rtc_rs_core::api::{assoc_in, get_in, update_in};
+use rtc_rs_core::api::{assoc_in, get_in, update_in, nil, b, i, f, st, v_empty, v_from, s_empty, s_from, m_empty, m_from, v_get, v_assoc, idx};
 use rtc_rs_core::{path, path_mixed};
 
 fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {
@@ -41,12 +41,26 @@ fn update_in_str_nil_semantics() {
 
 #[test]
 fn constructor_helpers_smoke() {
-    use rtc_rs_core::api::{nil, b, i64v, f64v, s, vecv, mapv};
     assert_eq!(nil(), Value::Nil);
     assert_eq!(b(true), Value::Bool(true));
-    assert_eq!(i64v(7), Value::I64(7));
-    assert_eq!(f64v(1.5), Value::F64(1.5));
-    assert_eq!(s("x"), Value::Str("x".into()));
-    assert_eq!(vecv(vec![i64v(1)]), Value::Vec(vec![Value::I64(1)]));
-    assert_eq!(mapv(vec![("k".into(), i64v(1))]), Value::Map(vec![("k".into(), Value::I64(1))]));
+    assert_eq!(i(7), Value::I64(7));
+    assert_eq!(f(1.5), Value::F64(1.5));
+    assert_eq!(st("x"), Value::Str("x".into()));
+    assert_eq!(v_empty(), Value::Vec(vec![]));
+    assert_eq!(v_from(vec![i(1)]), Value::Vec(vec![Value::I64(1)]));
+    assert_eq!(m_empty(), Value::Map(vec![]));
+    assert_eq!(m_from(vec![("k", i(1))]), Value::Map(vec![("k".into(), Value::I64(1))]));
+    assert_eq!(s_empty(), Value::Vec(vec![]));
+    assert_eq!(s_from(vec![i(2)]), Value::Vec(vec![Value::I64(2)]));
+}
+
+
+#[test]
+fn v_index_helpers_work() {
+    let vv = v_from(vec![i(1), i(2)]);
+    assert_eq!(v_get(&vv, 1).unwrap(), i(2));
+    let vv2 = v_assoc(&vv, 0, i(9)).unwrap();
+    assert_eq!(v_get(&vv2, 0).unwrap(), i(9));
+    // still possible to build explicit mixed key when needed
+    let _k = idx(3);
 }

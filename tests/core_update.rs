@@ -1,4 +1,4 @@
-use rtc_rs_core::{update, update_in, Key, Value};
+use rtc_rs_core::core::{update, update_in, Key, Value};
 
 fn nil_to_one(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {
     Ok(match v {

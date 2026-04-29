@@ -1,4 +1,5 @@
-use rtc_rs_core::{assoc_in_str, get_in_str, update_in_str, Value};
+use rtc_rs_core::core::Value;
+use rtc_rs_core::ergonomic::{assoc_in, get_in, update_in};
 use rtc_rs_core::{path, path_mixed};
 
 fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {
@@ -12,8 +13,8 @@ fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {
 #[test]
 fn short_str_path_helpers_work() {
     let root = Value::Map(vec![]);
-    let r1 = assoc_in_str(&root, &["cfg", "http", "port"], Value::I64(8080)).unwrap();
-    let got = get_in_str(&r1, &["cfg", "http", "port"]).unwrap();
+    let r1 = assoc_in(&root, &["cfg", "http", "port"], Value::I64(8080)).unwrap();
+    let got = get_in(&r1, &["cfg", "http", "port"]).unwrap();
     assert_eq!(got, Value::I64(8080));
 }
 
@@ -32,7 +33,7 @@ fn path_mixed_supports_indices() {
 #[test]
 fn update_in_str_nil_semantics() {
     let root = Value::Map(vec![]);
-    let out = update_in_str(&root, &["cfg", "port"], inc_nil).unwrap();
-    let got = get_in_str(&out, &["cfg", "port"]).unwrap();
+    let out = update_in(&root, &["cfg", "port"], inc_nil).unwrap();
+    let got = get_in(&out, &["cfg", "port"]).unwrap();
     assert_eq!(got, Value::I64(1));
 }

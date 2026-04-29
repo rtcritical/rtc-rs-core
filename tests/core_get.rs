@@ -1,4 +1,4 @@
-use rtc_rs_core::{get, get_in, Key, Value};
+use rtc_rs_core::core::{get, get_in, Key, Value};
 
 #[test]
 fn get_missing_map_key_returns_nil() {

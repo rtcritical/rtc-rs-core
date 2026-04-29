@@ -1,4 +1,4 @@
-use rtc_rs_core::{assoc, assoc_in, Key, Value};
+use rtc_rs_core::core::{assoc, assoc_in, Key, Value};
 
 #[test]
 fn assoc_map_sets_key() {

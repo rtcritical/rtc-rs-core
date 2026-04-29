@@ -1,0 +1,21 @@
+# .unallowed (gitignore-style patterns)
+#
+# Used by: scripts/check_unallowed_content.py
+# Intent: project-local list of disallowed strings/patterns to prevent unintended
+# leakage of environment-specific content into shared artifacts.
+#
+# Format notes (same style as .gitignore):
+#   https://git-scm.com/docs/gitignore
+# - One pattern per line
+# - # starts a comment
+# - Blank lines are ignored
+# - Supports glob wildcards: * ? []
+# - Exception: ! negate/override rules are NOT supported
+#
+# See README.md in rtc-openclaw-project-mgmt for setup + usage.
+
+# Add your organization-specific patterns below.
+# examples:
+# mycompany
+# jane.doe@company.com
+# @mycompany

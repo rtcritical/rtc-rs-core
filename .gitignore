@@ -1,0 +1,15 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# C build artifacts
+/build/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+
+# Misc
+.DS_Store

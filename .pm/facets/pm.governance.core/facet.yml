@@ -1,0 +1,14 @@
+schema_version: 1
+facet:
+  id: pm.governance.core
+  version: 1.0.0
+  description: Core governance toggle-checker capability pack (default compatibility slice).
+compatibility:
+  pm_schema: ">=2.0.0 <3.0.0"
+dependencies:
+  requires: []
+  conflicts: []
+contributions:
+  overlays:
+    - key: governance-core
+      value: enabled

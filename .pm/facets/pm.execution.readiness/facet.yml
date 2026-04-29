@@ -1,0 +1,14 @@
+schema_version: 1
+facet:
+  id: pm.execution.readiness
+  version: 1.0.0
+  description: Execution-readiness policy/runbook/checker pack for engineering-grade PM task readiness.
+compatibility:
+  pm_schema: ">=2.0.0 <3.0.0"
+dependencies:
+  requires: []
+  conflicts: []
+contributions:
+  overlays:
+    - key: execution-readiness
+      value: enabled

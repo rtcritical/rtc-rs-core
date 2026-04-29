@@ -1,0 +1,43 @@
+schema_version: 1.0.0
+manifest_id: pm-skill-sync-manifest-v1
+source:
+  repo_root: .
+  skills_dir: skills
+  allow_globs:
+    - skills/**
+    - scripts/setup_agent_workspace_skills.sh
+    - scripts/sync_workspace_skills.sh
+    - scripts/check_workspace_skill_sync.py
+
+targets:
+  - id: openclaw-workspace-default
+    workspace_root_env: PM_SKILL_SYNC_WORKSPACE
+    skills_relpath: skills
+    default_install_mode: copy
+    with_scripts: true
+
+modes:
+  supported_install_modes:
+    - copy
+    - symlink
+  default_install_mode: copy
+  source_modes:
+    - auto
+    - local
+    - git
+
+checks:
+  parity:
+    checker: scripts/check_workspace_skill_sync.py
+    args:
+      - --fail-if-no-target
+  runtime_smoke:
+    - ./test-scripts/test_workspace_skill_sync_guard.sh
+    - ./test-scripts/test_e2e_pm_skill_install_upgrade_workflow.sh
+
+validation:
+  required_post_change_states:
+    - propagated
+    - parity-pass
+    - runtime-smoke-pass
+  non_waiver_repo_scope: true

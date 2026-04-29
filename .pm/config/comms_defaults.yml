@@ -1,0 +1,24 @@
+# Optional organization communication defaults
+# Copy and tailor values for your org/project.
+
+org: REPLACE_ORG_NAME
+profiles:
+  default:
+    surfaces:
+      openclaw_discord:
+        enabled: true
+        entrypoint: REPLACE_DISCORD_ENTRYPOINT
+        preferred_surface: REPLACE_DISCORD_SURFACE
+        owner: REPLACE_OWNER
+      x:
+        enabled: false
+        account: REPLACE_X_ACCOUNT
+        owner: REPLACE_OWNER
+      org_surface:
+        enabled: false
+        endpoint: REPLACE_ORG_SURFACE_ENDPOINT
+        owner: REPLACE_OWNER
+    policy:
+      require_repo_public_before_post: true
+      record_post_urls_in_launch_checklist: true
+      capture_feedback_in_pm_inbox: true

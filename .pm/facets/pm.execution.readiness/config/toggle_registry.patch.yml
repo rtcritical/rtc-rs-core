@@ -1,0 +1,9 @@
+schema_version: 1
+plugins:
+  task_execution_readiness:
+    path: .pm/facets/pm.execution.readiness/toggle-checkers/task_execution_readiness.py
+    function: run
+toggles:
+  require_task_execution_readiness:
+    checker: task_execution_readiness
+    description: Require execution-ready engineering detail fields on impacted PM tasks before implementation.

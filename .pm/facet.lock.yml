@@ -1,0 +1,18 @@
+schema_version: 1
+generated_at: '2026-04-28T17:38:33Z'
+resolver_version: facet-lifecycle-v0
+facets:
+- id: pm.execution.readiness
+  version: 1.0.0
+  source: local://pm-execution-readiness
+  digest: sha256:ad6bffcbeb0ed848351eaab38698712f9077bc6ef8e91e3ebd0d2ff57411753f
+  installed_at: '2026-04-28T17:38:33Z'
+  mode: copy
+  path: /home/node/.openclaw/workspace/projects/rtc-openclaw-project-mgmt/templates/pm/.pm/facets/pm.execution.readiness
+- id: pm.governance.core
+  version: 1.0.0
+  source: local://pm-governance-core
+  digest: sha256:abff97b42b593c7e09b203b2b3bf74c1e408e2c0a7577c94078e98482d601d5e
+  installed_at: '2026-04-28T17:38:32Z'
+  mode: copy
+  path: /home/node/.openclaw/workspace/projects/rtc-openclaw-project-mgmt/templates/pm/.pm/facets/pm.governance.core

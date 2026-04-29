@@ -1,0 +1,11 @@
+# Facet profile mapping (capability composition)
+# Keep profiles stable/deterministic; values are ordered facet IDs.
+
+profiles:
+  research.basic:
+    facets:
+      - research.core
+  research.deep:
+    facets:
+      - research.core
+      - research.lit-review

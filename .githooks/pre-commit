@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+PM_DIR="$REPO_ROOT/.pm"
+
+# Portable runtime-only validations for end-user projects.
+# IMPORTANT: Do not call rtc-openclaw-project-mgmt test-scripts from this template hook.
+
+echo "[pre-commit] Running portable PM runtime checks..."
+
+if [[ ! -d "$PM_DIR" ]]; then
+  echo "[pre-commit] .pm not found; skipping PM checks."
+  exit 0
+fi
+
+required=(
+  "manifest.yml"
+  "charter.md"
+  "goals.md"
+  "scope.md"
+  "backlog.md"
+  "stakeholders.yml"
+  "inbox/README.md"
+  "project.yml"
+)
+
+missing=0
+for rel in "${required[@]}"; do
+  if [[ ! -f "$PM_DIR/$rel" ]]; then
+    echo "[pre-commit] ERROR: missing required .pm file: $rel" >&2
+    missing=1
+  fi
+done
+if [[ $missing -ne 0 ]]; then
+  exit 1
+fi
+
+# Optional richer validation if PM tooling scripts are available in the target repo.
+if [[ -f "$PM_DIR/scripts/validate_pm.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/validate_pm.py..."
+  python3 "$PM_DIR/scripts/validate_pm.py" "$REPO_ROOT"
+elif [[ -f "$REPO_ROOT/scripts/validate_pm.py" ]]; then
+  echo "[pre-commit] Running validate_pm.py..."
+  python3 "$REPO_ROOT/scripts/validate_pm.py" "$REPO_ROOT"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_pm_lane_compliance.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_pm_lane_compliance.py..."
+  python3 "$PM_DIR/scripts/check_pm_lane_compliance.py" "$REPO_ROOT"
+elif [[ -f "$REPO_ROOT/scripts/check_pm_lane_compliance.py" ]]; then
+  echo "[pre-commit] Running check_pm_lane_compliance.py..."
+  python3 "$REPO_ROOT/scripts/check_pm_lane_compliance.py" "$REPO_ROOT"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_test_script_headers.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_test_script_headers.py..."
+  python3 "$PM_DIR/scripts/check_test_script_headers.py" "$REPO_ROOT"
+elif [[ -f "$REPO_ROOT/scripts/check_test_script_headers.py" ]]; then
+  echo "[pre-commit] Running check_test_script_headers.py..."
+  python3 "$REPO_ROOT/scripts/check_test_script_headers.py" "$REPO_ROOT"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_pm_markdown_ascii.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_pm_markdown_ascii.py..."
+  python3 "$PM_DIR/scripts/check_pm_markdown_ascii.py" "$REPO_ROOT"
+elif [[ -f "$REPO_ROOT/scripts/check_pm_markdown_ascii.py" ]]; then
+  echo "[pre-commit] Running PM ASCII guard..."
+  python3 "$REPO_ROOT/scripts/check_pm_markdown_ascii.py" "$REPO_ROOT"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_pm_toggles.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_pm_toggles.py..."
+  python3 "$PM_DIR/scripts/check_pm_toggles.py" "$REPO_ROOT"
+elif [[ -f "$REPO_ROOT/scripts/check_pm_toggles.py" ]]; then
+  echo "[pre-commit] Running PM toggle checks..."
+  python3 "$REPO_ROOT/scripts/check_pm_toggles.py" "$REPO_ROOT"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_pm_task_binding.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_pm_task_binding.py..."
+  python3 "$PM_DIR/scripts/check_pm_task_binding.py" "$REPO_ROOT"
+elif [[ -f "$REPO_ROOT/scripts/check_pm_task_binding.py" ]]; then
+  echo "[pre-commit] Running PM task-binding guard..."
+  python3 "$REPO_ROOT/scripts/check_pm_task_binding.py" "$REPO_ROOT"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_git_clean_task_boundary.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_git_clean_task_boundary.py..."
+  STAGED_FILES="$(git diff --cached --name-only)"
+  ALLOW_ARGS=()
+  if [[ -n "$STAGED_FILES" ]]; then
+    while IFS= read -r f; do
+      [[ -z "$f" ]] && continue
+      ALLOW_ARGS+=("--allow-path" "$f")
+    done <<< "$STAGED_FILES"
+  fi
+  python3 "$PM_DIR/scripts/check_git_clean_task_boundary.py" "$REPO_ROOT" "${ALLOW_ARGS[@]}"
+elif [[ -f "$REPO_ROOT/scripts/check_git_clean_task_boundary.py" ]]; then
+  echo "[pre-commit] Running git task-boundary cleanliness guard..."
+  STAGED_FILES="$(git diff --cached --name-only)"
+  ALLOW_ARGS=()
+  if [[ -n "$STAGED_FILES" ]]; then
+    while IFS= read -r f; do
+      [[ -z "$f" ]] && continue
+      ALLOW_ARGS+=("--allow-path" "$f")
+    done <<< "$STAGED_FILES"
+  fi
+  python3 "$REPO_ROOT/scripts/check_git_clean_task_boundary.py" "$REPO_ROOT" "${ALLOW_ARGS[@]}"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_canonical_facet_ids.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_canonical_facet_ids.py..."
+  python3 "$PM_DIR/scripts/check_canonical_facet_ids.py"
+elif [[ -f "$REPO_ROOT/scripts/check_canonical_facet_ids.py" ]]; then
+  echo "[pre-commit] Running canonical facet-id naming guard..."
+  python3 "$REPO_ROOT/scripts/check_canonical_facet_ids.py"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_policy_procedure_placement.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_policy_procedure_placement.py..."
+  python3 "$PM_DIR/scripts/check_policy_procedure_placement.py"
+elif [[ -f "$REPO_ROOT/scripts/check_policy_procedure_placement.py" ]]; then
+  echo "[pre-commit] Running policy/procedure placement guard..."
+  python3 "$REPO_ROOT/scripts/check_policy_procedure_placement.py"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_pm_runtime_brief.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_pm_runtime_brief.py..."
+  python3 "$PM_DIR/scripts/check_pm_runtime_brief.py" "$REPO_ROOT"
+elif [[ -f "$REPO_ROOT/scripts/check_pm_runtime_brief.py" ]]; then
+  echo "[pre-commit] Running PM runtime brief guard..."
+  python3 "$REPO_ROOT/scripts/check_pm_runtime_brief.py" "$REPO_ROOT"
+fi
+
+if [[ -f "$PM_DIR/scripts/check_superstar_improvement_scan.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/check_superstar_improvement_scan.py..."
+  python3 "$PM_DIR/scripts/check_superstar_improvement_scan.py" "$REPO_ROOT" --top 5
+elif [[ -f "$REPO_ROOT/scripts/check_superstar_improvement_scan.py" ]]; then
+  echo "[pre-commit] Running superstar improvement scan (advisory + opt-in submission flow)..."
+  python3 "$REPO_ROOT/scripts/check_superstar_improvement_scan.py" "$REPO_ROOT" --top 5
+fi
+
+if [[ -f "$PM_DIR/scripts/run_facet_checks.py" ]]; then
+  echo "[pre-commit] Running .pm/scripts/run_facet_checks.py..."
+  python3 "$PM_DIR/scripts/run_facet_checks.py" "$REPO_ROOT"
+elif [[ -f "$REPO_ROOT/scripts/run_facet_checks.py" ]]; then
+  echo "[pre-commit] Running run_facet_checks.py..."
+  python3 "$REPO_ROOT/scripts/run_facet_checks.py" "$REPO_ROOT"
+fi
+
+echo "[pre-commit] PM runtime checks passed."

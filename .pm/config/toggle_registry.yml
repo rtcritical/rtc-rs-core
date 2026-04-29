@@ -1,0 +1,12 @@
+schema_version: 1
+trusted_plugin_roots:
+  - .pm/toggle-checkers
+  - .pm/facets
+plugins: {}
+toggles:
+  require_open_question_taskization:
+    checker: open_question_taskization
+    description: Require planning open-questions artifact with taskized unresolved items for governance-impacting changes.
+  require_task_execution_readiness:
+    checker: task_execution_readiness
+    description: Require execution-ready engineering detail fields on impacted PM tasks before implementation.

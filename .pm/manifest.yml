@@ -1,0 +1,26 @@
+project:
+  id: REPLACE_PROJECT_ID
+  name: REPLACE_PROJECT_NAME
+  lifecycle: intake
+  repo: .
+owners:
+  primary: REPLACE_OWNER
+  agent: AGENT_NAME
+links:
+  charter: .pm/charter.md
+  goals: .pm/goals.md
+  scope: .pm/scope.md
+  backlog: .pm/backlog.md
+  stakeholders: .pm/stakeholders.yml
+  version: .pm/version.yml
+  procedures_index: .pm/procedures/README.md
+  pm_operations_procedure: .pm/procedures/pm-operations.md
+  metrics: .pm/metrics.md
+  skill_sync_manifest: .pm/config/skill-sync-manifest.yml
+  skill_sync_cli: scripts/sync_workspace_skills.py
+schema:
+  version: 2.0.0
+  compatibility: '>=2.0.0 <3.0.0'
+updated:
+  at: REPLACE_YYYY-MM-DD
+  by: AGENT_NAME

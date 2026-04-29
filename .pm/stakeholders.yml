@@ -1,0 +1,5 @@
+stakeholders:
+  - name: REPLACE_NAME
+    role: sponsor
+    decisions: [scope, priority]
+    contact: REPLACE_CONTACT

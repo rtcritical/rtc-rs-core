@@ -22,13 +22,18 @@ where
     Value::Vec(iter.into_iter().collect())
 }
 
-pub fn m() -> Value { Value::Map(vec![]) }
+pub fn m_from_pairs<K>(pairs: Vec<(K, Value)>) -> Value
+where
+    K: Into<String>,
+{
+    Value::Map(pairs.into_iter().map(|(k, v)| (k.into(), v)).collect())
+}
 pub fn m_from<I, K>(iter: I) -> Value
 where
     I: IntoIterator<Item = (K, Value)>,
     K: Into<String>,
 {
-    Value::Map(iter.into_iter().map(|(k, v)| (k.into(), v)).collect())
+    m_from_pairs(iter.into_iter().collect())
 }
 
 

@@ -3,7 +3,7 @@
 Rust `api` module naming:
 - Scalars: `nil`, `b`, `i`, `f`, `st`
 - Constructors:
-  - map empty: `m()`
+  - map primary macro: `m!()` / `m!(("k", v), ...)`
   - vector primary macro: `v!()` / `v!(...)`
   - set primary macro: `s!()` / `s!(...)`
   - from collection: `m_from`, `v_from`, `s_from`

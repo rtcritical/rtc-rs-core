@@ -43,3 +43,12 @@ macro_rules! s {
         $crate::core::Value::Vec(vec![$($elem),+])
     };
 }
+
+
+#[macro_export]
+macro_rules! m {
+    () => { $crate::core::Value::Map(vec![]) };
+    ($(($k:expr, $v:expr)),+ $(,)?) => {
+        $crate::api::m_from_pairs(vec![$(($k, $v)),+])
+    };
+}

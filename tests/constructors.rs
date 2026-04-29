@@ -1,11 +1,11 @@
 use rtc_rs_core::api::*;
 use rtc_rs_core::core::Value;
-use rtc_rs_core::{v, s};
+use rtc_rs_core::{v, s, m};
 
 #[test]
 fn empty_constructors_are_empty() {
     assert_eq!(v!(), Value::Vec(vec![]));
-    assert_eq!(m(), Value::Map(vec![]));
+    assert_eq!(m!(), Value::Map(vec![]));
     assert_eq!(s!(), Value::Vec(vec![]));
 }
 
@@ -38,4 +38,11 @@ fn vector_index_helpers_bounds_and_growth() {
     let vv2 = v_assoc(&vv, 3, i(7)).unwrap();
     assert_eq!(v_get(&vv2, 3).unwrap(), i(7));
     assert_eq!(v_get(&vv2, 1).unwrap(), nil());
+}
+
+
+#[test]
+fn map_macro_builds_from_tuples() {
+    assert_eq!(m!(("a", i(1)), ("b", st("x"))), Value::Map(vec![("a".into(), Value::I64(1)), ("b".into(), Value::Str("x".into()))]));
+    assert_eq!(m!(), Value::Map(vec![]));
 }

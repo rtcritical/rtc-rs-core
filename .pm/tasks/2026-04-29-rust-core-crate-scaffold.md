@@ -14,3 +14,5 @@
 - `cargo test` passing for baseline value-model smoke coverage.
 
 - get/get_in core ops implemented with tests.
+
+- Added Rust ergonomics layer (`path!`, `path_mixed!`, `*_in_str` helpers) with tests.

@@ -489,3 +489,48 @@ pub extern "C" fn rtc_val_free(v: *mut rtc_val) -> rtc_status {
     unsafe { drop(Box::from_raw(v)) };
     rtc_status::RTC_OK
 }
+
+
+// -------- Ergonomics layer (Rust-native helpers/macros) --------
+
+pub fn k<S: Into<String>>(s: S) -> Key { Key::Str(s.into()) }
+pub fn i(n: i64) -> Key { Key::Index(n) }
+
+pub fn get_in_str(root: &Value, path: &[&str]) -> Result<Value, rtc_status> {
+    let ks: Vec<Key> = path.iter().map(|s| Key::Str((*s).to_string())).collect();
+    get_in(root, &ks)
+}
+
+pub fn assoc_in_str(root: &Value, path: &[&str], val: Value) -> Result<Value, rtc_status> {
+    let ks: Vec<Key> = path.iter().map(|s| Key::Str((*s).to_string())).collect();
+    assoc_in(root, &ks, val)
+}
+
+pub fn update_in_str(root: &Value, path: &[&str], f: UpdaterFn) -> Result<Value, rtc_status> {
+    let ks: Vec<Key> = path.iter().map(|s| Key::Str((*s).to_string())).collect();
+    update_in(root, &ks, f)
+}
+
+#[macro_export]
+macro_rules! path {
+    ($($seg:expr),* $(,)?) => {{
+        vec![$($crate::Key::Str(($seg).to_string())),*]
+    }};
+}
+
+#[macro_export]
+macro_rules! path_mixed {
+    ($($seg:tt),* $(,)?) => {{
+        let mut v = Vec::<$crate::Key>::new();
+        $(
+            $crate::path_mixed!(@push v, $seg);
+        )*
+        v
+    }};
+    (@push $v:ident, [$idx:expr]) => {
+        $v.push($crate::Key::Index($idx as i64));
+    };
+    (@push $v:ident, $s:expr) => {
+        $v.push($crate::Key::Str(($s).to_string()));
+    };
+}

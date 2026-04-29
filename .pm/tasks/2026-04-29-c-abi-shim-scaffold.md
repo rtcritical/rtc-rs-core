@@ -25,3 +25,11 @@
 - Added direct ABI surface integration tests (`tests/abi_surface.rs`).
 
 - Parity runner stubs replaced with executing vector cases and api/core comparator checks.
+
+
+Status: DONE
+
+Closure evidence:
+- Added direct ABI callback edge-case tests for update/update_in error paths.
+- Replaced parity stubs with active runner/comparator and added m!/m_from parity coverage.
+- cargo test --tests passing on full suite.

@@ -1,4 +1,5 @@
 use rtc_rs_core::api;
+use rtc_rs_core::m;
 use rtc_rs_core::core::{self, Key, Value, rtc_status};
 use std::fs;
 
@@ -65,4 +66,12 @@ fn parity_api_vs_core_for_string_paths() {
     )
     .unwrap();
     assert_eq!(via_api, via_core);
+}
+
+
+#[test]
+fn parity_m_macro_vs_m_from() {
+    let via_macro = m!(("a", Value::I64(1)), ("b", Value::I64(2)));
+    let via_from = api::m_from(vec![("a", Value::I64(1)), ("b", Value::I64(2))]);
+    assert_eq!(via_macro, via_from);
 }

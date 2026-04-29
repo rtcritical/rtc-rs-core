@@ -33,23 +33,29 @@ where
     Value::Map(iter.into_iter().map(|(k, v)| (k.into(), v)).collect())
 }
 
+
+
+pub fn vals<'a>(m: &'a [(String, Value)]) -> Vec<&'a Value> {
+    m.iter().map(|(_, v)| v).collect()
+}
+
 pub fn k<S: Into<String>>(s: S) -> Key { Key::Str(s.into()) }
 pub fn idx(n: i64) -> Key { Key::Index(n) }
 
-fn ks(path: &[&str]) -> Vec<Key> {
+fn keys(path: &[&str]) -> Vec<Key> {
     path.iter().map(|s| k(*s)).collect()
 }
 
 pub fn get_in(root: &Value, path: &[&str]) -> Result<Value, rtc_status> {
-    core::get_in(root, &ks(path))
+    core::get_in(root, &keys(path))
 }
 
 pub fn assoc_in(root: &Value, path: &[&str], val: Value) -> Result<Value, rtc_status> {
-    core::assoc_in(root, &ks(path), val)
+    core::assoc_in(root, &keys(path), val)
 }
 
 pub fn update_in(root: &Value, path: &[&str], f: UpdaterFn) -> Result<Value, rtc_status> {
-    core::update_in(root, &ks(path), f)
+    core::update_in(root, &keys(path), f)
 }
 
 // optional explicit vector index helpers so most callers avoid Key::Index directly

@@ -64,3 +64,17 @@ fn v_index_helpers_work() {
     // still possible to build explicit mixed key when needed
     let _k = idx(3);
 }
+
+
+#[test]
+fn keys_vals_helpers_smoke() {
+    use rtc_rs_core::api::vals;
+    let mm = m_from(vec![("a", i(1)), ("b", i(2))]);
+    if let Value::Map(entries) = mm {
+        let vv = vals(&entries);
+        assert_eq!(vv.len(), 2);
+        assert_eq!(*vv[0], i(1));
+    } else {
+        panic!("expected map");
+    }
+}

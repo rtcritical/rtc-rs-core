@@ -1,11 +1,12 @@
 use rtc_rs_core::api::*;
 use rtc_rs_core::core::Value;
+use rtc_rs_core::{v, s};
 
 #[test]
 fn empty_constructors_are_empty() {
-    assert_eq!(v_empty(), Value::Vec(vec![]));
-    assert_eq!(m_empty(), Value::Map(vec![]));
-    assert_eq!(s_empty(), Value::Vec(vec![]));
+    assert_eq!(v!(), Value::Vec(vec![]));
+    assert_eq!(m(), Value::Map(vec![]));
+    assert_eq!(s!(), Value::Vec(vec![]));
 }
 
 #[test]

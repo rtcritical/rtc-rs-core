@@ -26,3 +26,20 @@ macro_rules! path_mixed {
         $v.push($crate::core::Key::Str(($s).to_string()));
     };
 }
+
+
+#[macro_export]
+macro_rules! v {
+    () => { $crate::core::Value::Vec(vec![]) };
+    ($($elem:expr),+ $(,)?) => {
+        $crate::core::Value::Vec(vec![$($elem),+])
+    };
+}
+
+#[macro_export]
+macro_rules! s {
+    () => { $crate::core::Value::Vec(vec![]) };
+    ($($elem:expr),+ $(,)?) => {
+        $crate::core::Value::Vec(vec![$($elem),+])
+    };
+}

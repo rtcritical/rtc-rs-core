@@ -1,6 +1,6 @@
 use rtc_rs_core::core::Value;
-use rtc_rs_core::api::{assoc_in, get_in, update_in, nil, b, i, f, st, v_empty, v_from, s_empty, s_from, m_empty, m_from, v_get, v_assoc, idx};
-use rtc_rs_core::{path, path_mixed};
+use rtc_rs_core::api::{assoc_in, get_in, update_in, nil, b, i, f, st, v_from, s_from, m, m_from, v_get, v_assoc, idx};
+use rtc_rs_core::{path, path_mixed, v, s};
 
 fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {
     Ok(match v {
@@ -12,7 +12,7 @@ fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {
 
 #[test]
 fn short_str_path_helpers_work() {
-    let root = Value::Map(vec![]);
+    let root = m();
     let r1 = assoc_in(&root, &["cfg", "http", "port"], i(8080)).unwrap();
     let got = get_in(&r1, &["cfg", "http", "port"]).unwrap();
     assert_eq!(got, i(8080));
@@ -32,7 +32,7 @@ fn path_mixed_supports_indices() {
 
 #[test]
 fn update_in_str_nil_semantics() {
-    let root = Value::Map(vec![]);
+    let root = m();
     let out = update_in(&root, &["cfg", "port"], inc_nil).unwrap();
     let got = get_in(&out, &["cfg", "port"]).unwrap();
     assert_eq!(got, i(1));
@@ -46,11 +46,11 @@ fn constructor_helpers_smoke() {
     assert_eq!(i(7), Value::I64(7));
     assert_eq!(f(1.5), Value::F64(1.5));
     assert_eq!(st("x"), Value::Str("x".into()));
-    assert_eq!(v_empty(), Value::Vec(vec![]));
+    assert_eq!(v!(), Value::Vec(vec![]));
     assert_eq!(v_from(vec![i(1)]), Value::Vec(vec![Value::I64(1)]));
-    assert_eq!(m_empty(), Value::Map(vec![]));
+    assert_eq!(m(), m());
     assert_eq!(m_from(vec![("k", i(1))]), Value::Map(vec![("k".into(), Value::I64(1))]));
-    assert_eq!(s_empty(), Value::Vec(vec![]));
+    assert_eq!(s!(), Value::Vec(vec![]));
     assert_eq!(s_from(vec![i(2)]), Value::Vec(vec![Value::I64(2)]));
 }
 

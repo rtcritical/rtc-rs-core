@@ -7,7 +7,6 @@ pub fn i(v: i64) -> Value { Value::I64(v) }
 pub fn f(v: f64) -> Value { Value::F64(v) }
 pub fn st<S: Into<String>>(v: S) -> Value { Value::Str(v.into()) }
 
-pub fn v_empty() -> Value { Value::Vec(vec![]) }
 pub fn v_from<I>(iter: I) -> Value
 where
     I: IntoIterator<Item = Value>,
@@ -16,7 +15,6 @@ where
 }
 
 // set is extension-oriented in current model; represented as vector until set type lands
-pub fn s_empty() -> Value { Value::Vec(vec![]) }
 pub fn s_from<I>(iter: I) -> Value
 where
     I: IntoIterator<Item = Value>,
@@ -24,7 +22,7 @@ where
     Value::Vec(iter.into_iter().collect())
 }
 
-pub fn m_empty() -> Value { Value::Map(vec![]) }
+pub fn m() -> Value { Value::Map(vec![]) }
 pub fn m_from<I, K>(iter: I) -> Value
 where
     I: IntoIterator<Item = (K, Value)>,

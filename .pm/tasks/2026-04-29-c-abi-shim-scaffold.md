@@ -1,9 +1,15 @@
 # Task: C ABI shim scaffold
 
 - **Owner:** Nick + Clio
-- **Status:** TODO
+- **Status:** IN_PROGRESS
 - **Goal:** Create strict C ABI shim boundary matching `docs/spec/v0-nucleus.h`.
 - **Acceptance:**
   - exported symbol map draft
   - compileable shim stubs
   - status/error plumbing hooks
+
+
+## Progress
+- Added Rust `extern "C"` shim skeleton with strict status enum and context lifecycle fns.
+- Added baseline constructor surface (`rtc_nil`, `rtc_bool`, `rtc_i64`, `rtc_f64`, `rtc_strn`) and value free helper.
+- Copied frozen ABI draft header into `include/v0-nucleus.h` for alignment review.

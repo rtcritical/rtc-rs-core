@@ -17,3 +17,5 @@
 - rtc_get_ex/rtc_get_in_ex wired to core ops.
 
 - rtc_assoc_ex/rtc_assoc_in_ex wired to core ops.
+
+- rtc_update_ex/rtc_update_in_ex wired to core ops.

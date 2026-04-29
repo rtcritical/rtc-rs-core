@@ -123,6 +123,21 @@ pub fn assoc_in(root: &Value, path: &[Key], val: Value) -> Result<Value, rtc_sta
 }
 
 
+pub type UpdaterFn = fn(Value) -> Result<Value, rtc_status>;
+
+pub fn update(root: &Value, key: &Key, f: UpdaterFn) -> Result<Value, rtc_status> {
+    let cur = get(root, key)?;
+    let next = f(cur)?;
+    assoc(root, key, next)
+}
+
+pub fn update_in(root: &Value, path: &[Key], f: UpdaterFn) -> Result<Value, rtc_status> {
+    let cur = get_in(root, path)?;
+    let next = f(cur)?;
+    assoc_in(root, path, next)
+}
+
+
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum rtc_status {
@@ -166,6 +181,8 @@ pub struct rtc_path {
     pub elems: *const rtc_key,
     pub len: u64,
 }
+
+pub type rtc_update_fn = Option<unsafe extern "C" fn(ctx: *mut rtc_ctx, current: *const rtc_val, user_data: *mut std::ffi::c_void, out_next: *mut *mut rtc_val) -> rtc_status>;
 
 #[repr(C)]
 pub struct rtc_ctx {
@@ -392,6 +409,75 @@ pub extern "C" fn rtc_assoc_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path:
             set_error(ctx, e, "assoc_in type conflict");
             e
         }
+    }
+}
+
+
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_update_ex(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
+    if ctx.is_null() || root.is_null() || out.is_null() {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    let cb = match f {
+        Some(cb) => cb,
+        None => return rtc_status::RTC_ERR_INVALID_ARG,
+    };
+    let k = unsafe { match key_from_ffi(&key) { Ok(x) => x, Err(e) => return e } };
+    let r = unsafe { &(*root).inner };
+    let cur = match get(r, &k) { Ok(v) => v, Err(e) => return e };
+    let cur_ptr = Box::into_raw(Box::new(rtc_val { inner: cur }));
+    let mut next_ptr: *mut rtc_val = std::ptr::null_mut();
+    let st = unsafe { cb(ctx, cur_ptr as *const rtc_val, user_data, &mut next_ptr as *mut *mut rtc_val) };
+    let _ = unsafe { Box::from_raw(cur_ptr) };
+    if st != rtc_status::RTC_OK || next_ptr.is_null() {
+        if st == rtc_status::RTC_OK {
+            set_error(ctx, rtc_status::RTC_ERR_STATE, "updater returned null next value");
+            return rtc_status::RTC_ERR_STATE;
+        }
+        return st;
+    }
+    let next = unsafe { (*next_ptr).inner.clone() };
+    let _ = unsafe { Box::from_raw(next_ptr) };
+    match assoc(r, &k, next) {
+        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v })) }; rtc_status::RTC_OK }
+        Err(e) => { set_error(ctx, e, "update type conflict"); e }
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_update_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
+    if ctx.is_null() || root.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    let cb = match f {
+        Some(cb) => cb,
+        None => return rtc_status::RTC_ERR_INVALID_ARG,
+    };
+    let mut ks: Vec<Key> = Vec::with_capacity(path.len as usize);
+    let elems = unsafe { std::slice::from_raw_parts(path.elems, path.len as usize) };
+    for k in elems {
+        let kk = unsafe { key_from_ffi(k) };
+        match kk { Ok(v) => ks.push(v), Err(e) => { set_error(ctx, e, "invalid path key"); return e; } }
+    }
+    let r = unsafe { &(*root).inner };
+    let cur = match get_in(r, &ks) { Ok(v) => v, Err(e) => return e };
+    let cur_ptr = Box::into_raw(Box::new(rtc_val { inner: cur }));
+    let mut next_ptr: *mut rtc_val = std::ptr::null_mut();
+    let st = unsafe { cb(ctx, cur_ptr as *const rtc_val, user_data, &mut next_ptr as *mut *mut rtc_val) };
+    let _ = unsafe { Box::from_raw(cur_ptr) };
+    if st != rtc_status::RTC_OK || next_ptr.is_null() {
+        if st == rtc_status::RTC_OK {
+            set_error(ctx, rtc_status::RTC_ERR_STATE, "updater returned null next value");
+            return rtc_status::RTC_ERR_STATE;
+        }
+        return st;
+    }
+    let next = unsafe { (*next_ptr).inner.clone() };
+    let _ = unsafe { Box::from_raw(next_ptr) };
+    match assoc_in(r, &ks, next) {
+        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v })) }; rtc_status::RTC_OK }
+        Err(e) => { set_error(ctx, e, "update_in type conflict"); e }
     }
 }
 

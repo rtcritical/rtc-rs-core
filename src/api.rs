@@ -55,12 +55,21 @@ pub fn get_in(root: &Value, path: &[&str]) -> Result<Value, rtc_status> {
     core::get_in(root, &keys(path))
 }
 
-pub fn assoc_in(root: &Value, path: &[&str], val: Value) -> Result<Value, rtc_status> {
+pub fn nassoc_in(root: &Value, path: &[&str], val: Value) -> Result<Value, rtc_status> {
     core::assoc_in(root, &keys(path), val)
 }
 
-pub fn update_in(root: &Value, path: &[&str], f: UpdaterFn) -> Result<Value, rtc_status> {
+pub fn nupdate_in(root: &Value, path: &[&str], f: UpdaterFn) -> Result<Value, rtc_status> {
     core::update_in(root, &keys(path), f)
+}
+
+// Compatibility aliases; reserved for future immutable semantics
+pub fn assoc_in(root: &Value, path: &[&str], val: Value) -> Result<Value, rtc_status> {
+    nassoc_in(root, path, val)
+}
+
+pub fn update_in(root: &Value, path: &[&str], f: UpdaterFn) -> Result<Value, rtc_status> {
+    nupdate_in(root, path, f)
 }
 
 // optional explicit vector index helpers so most callers avoid Key::Index directly
@@ -74,4 +83,13 @@ pub fn v_assoc(root: &Value, idxv: i64, val: Value) -> Result<Value, rtc_status>
 
 pub fn v_update(root: &Value, idxv: i64, f: UpdaterFn) -> Result<Value, rtc_status> {
     core::update(root, &Key::Index(idxv), f)
+}
+
+// Mutable single-key ops (explicit n* convention)
+pub fn nassoc(root: &Value, key: &Key, val: Value) -> Result<Value, rtc_status> {
+    core::assoc(root, key, val)
+}
+
+pub fn nupdate(root: &Value, key: &Key, f: UpdaterFn) -> Result<Value, rtc_status> {
+    core::update(root, key, f)
 }

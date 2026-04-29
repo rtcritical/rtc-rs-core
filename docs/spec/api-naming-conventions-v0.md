@@ -18,3 +18,9 @@ Role split (intentional):
 - `m!` is the literal constructor at call sites (`m!()`, `m!(("k", v), ...)`).
 - `m_from` is the runtime ingest constructor from iterable tuple outputs
   (e.g., map/reduce/filter pipelines, decoded/transformed records).
+
+
+Mutable naming (Common Lisp-style n*):
+- API primary mutable ops: `nassoc`, `nassoc_in`, `nupdate`, `nupdate_in`
+- ABI primary mutable ops: `rtc_nassoc_ex`, `rtc_nassoc_in_ex`, `rtc_nupdate_ex`, `rtc_nupdate_in_ex`
+- Legacy names (`assoc_in/update_in`, `rtc_assoc_ex/...`) remain as compatibility aliases and are reserved for future immutable semantics.

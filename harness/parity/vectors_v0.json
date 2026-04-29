@@ -1,0 +1,5 @@
+[
+  {"id":"vector_01_missing_top_key","op":"get_in","path":["missing"],"expected_status":"RTC_OK","expected_kind":"nil"},
+  {"id":"vector_03_assoc_in_create_path","op":"assoc_in","path":["cfg","http","port"],"value":{"i64":8080},"expected_status":"RTC_OK"},
+  {"id":"vector_05_type_conflict","op":"get_in","path":["a","b"],"expected_status":"RTC_ERR_TYPE"}
+]

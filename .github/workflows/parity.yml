@@ -1,0 +1,17 @@
+name: parity-harness
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run tests
+        run: cargo test
+      - name: Parity harness placeholder
+        run: echo "TODO: invoke strict ABI + wrapper parity comparator"

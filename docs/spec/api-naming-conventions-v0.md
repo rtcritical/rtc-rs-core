@@ -10,7 +10,7 @@ Rust `api` module naming:
 - Keys: `k` for string-key, `idx` for index-key
 
 Path/ops surface:
-- `get_in`, `assoc_in`, `update_in` are string-path-first in `api`.
+- `get_in`, `nassoc_in`, `nupdate_in` are string-path-first in `api`.
 - Index-heavy access should prefer vector helpers (`v_get`, `v_assoc`, `v_update`) so index key internals remain mostly opaque.
 
 
@@ -23,4 +23,4 @@ Role split (intentional):
 Mutable naming (Common Lisp-style n*):
 - API primary mutable ops: `nassoc`, `nassoc_in`, `nupdate`, `nupdate_in`
 - ABI primary mutable ops: `rtc_nassoc_ex`, `rtc_nassoc_in_ex`, `rtc_nupdate_ex`, `rtc_nupdate_in_ex`
-- Legacy names (`assoc_in/update_in`, `rtc_assoc_ex/...`) remain as compatibility aliases and are reserved for future immutable semantics.
+- No legacy mutable aliases are exported. Mutable API/ABI uses explicit `n*` names only.

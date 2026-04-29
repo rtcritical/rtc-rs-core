@@ -1,5 +1,5 @@
 use rtc_rs_core::core::Value;
-use rtc_rs_core::api::{nassoc_in, get_in, nupdate_in, assoc_in, update_in, nil, b, i, f, st, v_from, s_from, m_from, v_get, v_assoc, idx};
+use rtc_rs_core::api::{nassoc_in, get_in, nupdate_in, nil, b, i, f, st, v_from, s_from, m_from, v_get, v_assoc, idx};
 use rtc_rs_core::{path, path_mixed, v, s, m};
 
 fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {

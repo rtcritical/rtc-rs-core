@@ -58,7 +58,7 @@ fn parity_runner_executes_all_vectors() {
 #[test]
 fn parity_api_vs_core_for_string_paths() {
     let root = Value::Map(vec![]);
-    let via_api = api::assoc_in(&root, &["cfg", "http", "port"], Value::I64(8080)).unwrap();
+    let via_api = api::nassoc_in(&root, &["cfg", "http", "port"], Value::I64(8080)).unwrap();
     let via_core = core::assoc_in(
         &root,
         &[Key::Str("cfg".into()), Key::Str("http".into()), Key::Str("port".into())],

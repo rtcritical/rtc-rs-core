@@ -87,10 +87,10 @@ rtc_status rtc_as_str(rtc_val v, rtc_str* out);
 /* strict nucleus ops */
 rtc_status rtc_get_ex(rtc_val root, rtc_key key, rtc_val* out);
 rtc_status rtc_get_in_ex(rtc_val root, rtc_path path, rtc_val* out);
-rtc_status rtc_assoc_ex(rtc_ctx* ctx, rtc_val root, rtc_key key, rtc_val val, rtc_val* out);
-rtc_status rtc_assoc_in_ex(rtc_ctx* ctx, rtc_val root, rtc_path path, rtc_val val, rtc_val* out);
-rtc_status rtc_update_ex(rtc_ctx* ctx, rtc_val root, rtc_key key, rtc_update_fn fn, void* user_data, rtc_val* out);
-rtc_status rtc_update_in_ex(rtc_ctx* ctx, rtc_val root, rtc_path path, rtc_update_fn fn, void* user_data, rtc_val* out);
+rtc_status rtc_nassoc_ex(rtc_ctx* ctx, rtc_val root, rtc_key key, rtc_val val, rtc_val* out);
+rtc_status rtc_nassoc_in_ex(rtc_ctx* ctx, rtc_val root, rtc_path path, rtc_val val, rtc_val* out);
+rtc_status rtc_nupdate_ex(rtc_ctx* ctx, rtc_val root, rtc_key key, rtc_update_fn fn, void* user_data, rtc_val* out);
+rtc_status rtc_nupdate_in_ex(rtc_ctx* ctx, rtc_val root, rtc_path path, rtc_update_fn fn, void* user_data, rtc_val* out);
 
 #ifdef __cplusplus
 } /* extern "C" */

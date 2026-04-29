@@ -11,7 +11,7 @@ Define the strict boundary between the core collections nucleus and the JSON com
 
 ### Core nucleus (MUST)
 - Own JSON-compatible value semantics (`nil/bool/number/string/array/object`).
-- Own mutation/query semantics (`get/get_in/assoc/assoc_in/update/update_in`).
+- Own mutation/query semantics (`get/get_in/assoc/nassoc_in/update/nupdate_in`).
 - Own strict status/error contracts and thread-confined context behavior.
 - Remain serialization-agnostic.
 

@@ -5,8 +5,8 @@ Define a canonical vector set that every wrapper and strict ABI harness MUST exe
 
 ## Conventions
 - Missing reads return nil-equivalent + success.
-- `assoc_in` creates missing path segments.
-- `update`/`update_in` apply updater to nil on missing target.
+- `nassoc_in` creates missing path segments.
+- `nupdate`/`nupdate_in apply updater to nil on missing target.
 - Object/map ordering is unspecified and MUST NOT be used as an assertion key.
 - Assertions compare semantic value shape/content and status category.
 
@@ -28,20 +28,20 @@ Define a canonical vector set that every wrapper and strict ABI harness MUST exe
 **Op**: `get_in(["a","z"])`
 **Expected**: `RTC_OK`, result `nil`
 
-## Vector 03 — `assoc_in` path creation
+## Vector 03 — `nassoc_in` path creation
 **Input root**
 ```json
 {}
 ```
-**Op**: `assoc_in(["cfg","http","port"], 8080)`
+**Op**: `nassoc_in(["cfg","http","port"], 8080)`
 **Expected**: `RTC_OK`, result contains `{ "cfg": { "http": { "port": 8080 } } }`
 
-## Vector 04 — `update_in` missing target gets nil
+## Vector 04 — `nupdate_in` missing target gets nil
 **Input root**
 ```json
 {}
 ```
-**Op**: `update_in(["x"], fn_nil_to_1)` where updater maps nil->1
+**Op**: `nupdate_in(["x"], fn_nil_to_1)` where updater maps nil->1
 **Expected**: `RTC_OK`, result `{ "x": 1 }`
 
 ## Vector 05 — Type conflict on traversal
@@ -52,12 +52,12 @@ Define a canonical vector set that every wrapper and strict ABI harness MUST exe
 **Op**: `get_in(["a","b"])`
 **Expected**: `RTC_ERR_TYPE`
 
-## Vector 06 — `assoc_in` type conflict
+## Vector 06 — `nassoc_in` type conflict
 **Input root**
 ```json
 {"a":1}
 ```
-**Op**: `assoc_in(["a","b"], 2)`
+**Op**: `nassoc_in(["a","b"], 2)`
 **Expected**: `RTC_ERR_TYPE`
 
 ## Vector 07 — Vector index read hit

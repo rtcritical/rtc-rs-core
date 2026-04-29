@@ -63,14 +63,6 @@ pub fn nupdate_in(root: &Value, path: &[&str], f: UpdaterFn) -> Result<Value, rt
     core::update_in(root, &keys(path), f)
 }
 
-// Compatibility aliases; reserved for future immutable semantics
-pub fn assoc_in(root: &Value, path: &[&str], val: Value) -> Result<Value, rtc_status> {
-    nassoc_in(root, path, val)
-}
-
-pub fn update_in(root: &Value, path: &[&str], f: UpdaterFn) -> Result<Value, rtc_status> {
-    nupdate_in(root, path, f)
-}
 
 // optional explicit vector index helpers so most callers avoid Key::Index directly
 pub fn v_get(root: &Value, idxv: i64) -> Result<Value, rtc_status> {

@@ -20,11 +20,11 @@ For any logical operation, wrapper behavior MUST map to the same semantic outcom
    - Strict ABI expectation: `RTC_OK`, output `nil`
    - Wrapper expectation: language-level nil/none/null equivalent without hard error
 
-2. `assoc_in` with missing intermediate path
+2. `nassoc_in` with missing intermediate path
    - Strict ABI expectation: path creation by default, `RTC_OK`
    - Wrapper expectation: same effective path-creation result
 
-3. `update/update_in` missing target
+3. `update/nupdate_in` missing target
    - Strict ABI expectation: updater receives `nil`; success path returns `RTC_OK` when updater succeeds
    - Wrapper expectation: updater callback receives language nil equivalent
 
@@ -37,7 +37,7 @@ For any logical operation, wrapper behavior MUST map to the same semantic outcom
    - Strict ABI expectation: `RTC_ERR_TYPE`
    - Wrapper expectation: mapped deterministic typed error/result
 
-2. `assoc_in` path creation blocked by type conflict
+2. `nassoc_in` path creation blocked by type conflict
    - Strict ABI expectation: `RTC_ERR_TYPE`
    - Wrapper expectation: equivalent typed failure
 

@@ -61,6 +61,68 @@ pub fn get_in(root: &Value, path: &[Key]) -> Result<Value, rtc_status> {
     Ok(cur)
 }
 
+fn upsert_map_entries(mut m: Vec<(String, Value)>, k: String, v: Value) -> Vec<(String, Value)> {
+    if let Some((_, mv)) = m.iter_mut().find(|(mk, _)| *mk == k) {
+        *mv = v;
+        return m;
+    }
+    m.push((k, v));
+    m
+}
+
+pub fn assoc(root: &Value, key: &Key, val: Value) -> Result<Value, rtc_status> {
+    match (root, key) {
+        (Value::Map(m), Key::Str(k)) => Ok(Value::Map(upsert_map_entries(m.clone(), k.clone(), val))),
+        (Value::Nil, Key::Str(k)) => Ok(Value::Map(vec![(k.clone(), val)])),
+        (Value::Vec(v), Key::Index(i)) => {
+            if *i < 0 {
+                return Err(rtc_status::RTC_ERR_TYPE);
+            }
+            let idx = *i as usize;
+            let mut out = v.clone();
+            if idx >= out.len() {
+                out.resize(idx + 1, Value::Nil);
+            }
+            out[idx] = val;
+            Ok(Value::Vec(out))
+        }
+        (Value::Nil, Key::Index(i)) => {
+            if *i < 0 {
+                return Err(rtc_status::RTC_ERR_TYPE);
+            }
+            let idx = *i as usize;
+            let mut out = vec![Value::Nil; idx + 1];
+            out[idx] = val;
+            Ok(Value::Vec(out))
+        }
+        _ => Err(rtc_status::RTC_ERR_TYPE),
+    }
+}
+
+pub fn assoc_in(root: &Value, path: &[Key], val: Value) -> Result<Value, rtc_status> {
+    if path.is_empty() {
+        return Ok(val);
+    }
+    if path.len() == 1 {
+        return assoc(root, &path[0], val);
+    }
+    let head = &path[0];
+    let tail = &path[1..];
+    let child = get(root, head)?;
+    let child_base = if matches!(child, Value::Nil) {
+        match tail.first() {
+            Some(Key::Str(_)) => Value::Map(vec![]),
+            Some(Key::Index(_)) => Value::Vec(vec![]),
+            None => Value::Nil,
+        }
+    } else {
+        child
+    };
+    let updated_child = assoc_in(&child_base, tail, val)?;
+    assoc(root, head, updated_child)
+}
+
+
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum rtc_status {
@@ -278,6 +340,56 @@ pub extern "C" fn rtc_get_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path: r
         }
         Err(e) => {
             set_error(ctx, e, "type conflict during get_in");
+            e
+        }
+    }
+}
+
+
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_assoc_ex(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
+    if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    let k = unsafe { match key_from_ffi(&key) { Ok(x) => x, Err(e) => return e } };
+    let r = unsafe { &(*root).inner };
+    let v = unsafe { (*val).inner.clone() };
+    match assoc(r, &k, v) {
+        Ok(nv) => {
+            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: nv })) };
+            rtc_status::RTC_OK
+        }
+        Err(e) => {
+            set_error(ctx, e, "assoc type conflict");
+            e
+        }
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_assoc_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
+    if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    let mut ks: Vec<Key> = Vec::with_capacity(path.len as usize);
+    let elems = unsafe { std::slice::from_raw_parts(path.elems, path.len as usize) };
+    for k in elems {
+        let kk = unsafe { key_from_ffi(k) };
+        match kk {
+            Ok(v) => ks.push(v),
+            Err(e) => { set_error(ctx, e, "invalid path key"); return e; }
+        }
+    }
+    let r = unsafe { &(*root).inner };
+    let v = unsafe { (*val).inner.clone() };
+    match assoc_in(r, &ks, v) {
+        Ok(nv) => {
+            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: nv })) };
+            rtc_status::RTC_OK
+        }
+        Err(e) => {
+            set_error(ctx, e, "assoc_in type conflict");
             e
         }
     }

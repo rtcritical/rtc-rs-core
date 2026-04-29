@@ -15,3 +15,5 @@
 - Copied frozen ABI draft header into `include/v0-nucleus.h` for alignment review.
 
 - rtc_get_ex/rtc_get_in_ex wired to core ops.
+
+- rtc_assoc_ex/rtc_assoc_in_ex wired to core ops.

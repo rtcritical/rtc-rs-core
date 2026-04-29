@@ -13,3 +13,5 @@
 - Added Rust `extern "C"` shim skeleton with strict status enum and context lifecycle fns.
 - Added baseline constructor surface (`rtc_nil`, `rtc_bool`, `rtc_i64`, `rtc_f64`, `rtc_strn`) and value free helper.
 - Copied frozen ABI draft header into `include/v0-nucleus.h` for alignment review.
+
+- rtc_get_ex/rtc_get_in_ex wired to core ops.

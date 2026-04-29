@@ -30,3 +30,6 @@ Maintain wrapper parity strategy used by nucleus:
 - Future extension APIs may expose `*_with_opts` signatures for behavior tuning.
 - Options values should use the same map/value model for consistency.
 - Candidate early option: `get/get_in` default value override while preserving nucleus baseline semantics.
+
+
+Related extension: `docs/spec/user-object-extension-v1.md` (custom opaque objects, non-nucleus).

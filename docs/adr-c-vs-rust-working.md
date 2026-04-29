@@ -367,6 +367,20 @@ Revisit this decision only if one or more are observed with evidence:
 
 ---
 
+
+## Addendum: User Object Extension Without Nucleus Changes
+
+We explicitly support a non-nucleus extension path for custom user/application objects.
+
+- Nucleus remains frozen and JSON-compatible.
+- User objects are introduced only as an additive extension value kind.
+- Traversal through non-traversable values (including user objects) SHALL return `nil + RTC_OK` for `get_in`-style reads, preserving Clojure-ish safety semantics.
+- Initial extension phase allows user objects as values; key usage is deferred behind stricter hash/eq/lifetime policy gates.
+
+Reference spec: `docs/spec/user-object-extension-v1.md`
+
+---
+
 ## Open Questions
 
 1. Which error contract variant do we standardize on first?

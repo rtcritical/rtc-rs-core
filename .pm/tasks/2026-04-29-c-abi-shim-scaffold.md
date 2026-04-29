@@ -19,3 +19,5 @@
 - rtc_assoc_ex/rtc_assoc_in_ex wired to core ops.
 
 - rtc_update_ex/rtc_update_in_ex wired to core ops.
+
+- Added user-object extension direction as non-nucleus additive spec (v1).

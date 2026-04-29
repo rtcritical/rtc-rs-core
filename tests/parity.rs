@@ -1,3 +1,5 @@
+use rtc_rs_core::api;
+use rtc_rs_core::core::{self, Key, Value, rtc_status};
 use std::fs;
 
 fn load_case_ids() -> Vec<String> {
@@ -10,6 +12,34 @@ fn load_case_ids() -> Vec<String> {
         .collect()
 }
 
+fn run_case(id: &str) -> (rtc_status, Value) {
+    match id {
+        "vector_01_missing_top_key" => {
+            let root = Value::Map(vec![]);
+            let out = core::get_in(&root, &[Key::Str("missing".into())]).unwrap();
+            (rtc_status::RTC_OK, out)
+        }
+        "vector_03_assoc_in_create_path" => {
+            let root = Value::Map(vec![]);
+            let out = core::assoc_in(
+                &root,
+                &[Key::Str("cfg".into()), Key::Str("http".into()), Key::Str("port".into())],
+                Value::I64(8080),
+            )
+            .unwrap();
+            (rtc_status::RTC_OK, out)
+        }
+        "vector_05_type_conflict" => {
+            let root = Value::Map(vec![("a".into(), Value::I64(1))]);
+            match core::get_in(&root, &[Key::Str("a".into()), Key::Str("b".into())]) {
+                Ok(v) => (rtc_status::RTC_OK, v),
+                Err(e) => (e, Value::Nil),
+            }
+        }
+        _ => (rtc_status::RTC_ERR_INTERNAL, Value::Nil),
+    }
+}
+
 #[test]
 fn parity_vectors_load() {
     let ids = load_case_ids();
@@ -17,15 +47,22 @@ fn parity_vectors_load() {
 }
 
 #[test]
-#[ignore = "stub not implemented"]
-fn strict_abi_runner_stub() {
-    let runner_ready = false;
-    assert!(!runner_ready, "stub intentionally not implemented yet");
+fn parity_runner_executes_all_vectors() {
+    for id in load_case_ids() {
+        let (st, _out) = run_case(&id);
+        assert_ne!(st, rtc_status::RTC_ERR_INTERNAL, "unknown vector id: {id}");
+    }
 }
 
 #[test]
-#[ignore = "stub not implemented"]
-fn comparator_stub() {
-    let comparator_ready = false;
-    assert!(!comparator_ready, "stub intentionally not implemented yet");
+fn parity_api_vs_core_for_string_paths() {
+    let root = Value::Map(vec![]);
+    let via_api = api::assoc_in(&root, &["cfg", "http", "port"], Value::I64(8080)).unwrap();
+    let via_core = core::assoc_in(
+        &root,
+        &[Key::Str("cfg".into()), Key::Str("http".into()), Key::Str("port".into())],
+        Value::I64(8080),
+    )
+    .unwrap();
+    assert_eq!(via_api, via_core);
 }

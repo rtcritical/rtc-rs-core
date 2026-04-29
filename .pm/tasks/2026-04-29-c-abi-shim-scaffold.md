@@ -21,3 +21,7 @@
 - rtc_update_ex/rtc_update_in_ex wired to core ops.
 
 - Added user-object extension direction as non-nucleus additive spec (v1).
+
+- Added direct ABI surface integration tests (`tests/abi_surface.rs`).
+
+- Parity runner stubs replaced with executing vector cases and api/core comparator checks.

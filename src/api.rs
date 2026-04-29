@@ -28,6 +28,8 @@ where
 {
     Value::Map(pairs.into_iter().map(|(k, v)| (k.into(), v)).collect())
 }
+// m_from builds map values from runtime iterables of key/value tuples.
+// Prefer this for map/reduce/filter pipelines or decoded inputs.
 pub fn m_from<I, K>(iter: I) -> Value
 where
     I: IntoIterator<Item = (K, Value)>,

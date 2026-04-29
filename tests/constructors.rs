@@ -46,3 +46,19 @@ fn map_macro_builds_from_tuples() {
     assert_eq!(m!(("a", i(1)), ("b", st("x"))), Value::Map(vec![("a".into(), Value::I64(1)), ("b".into(), Value::Str("x".into()))]));
     assert_eq!(m!(), Value::Map(vec![]));
 }
+
+
+#[test]
+fn m_from_accepts_pipeline_iterables() {
+    let src = vec![1_i64, 2_i64, 3_i64];
+    let tuples = src.into_iter().map(|n| (format!("k{n}"), i(n)));
+    let out = m_from(tuples);
+    assert_eq!(
+        out,
+        Value::Map(vec![
+            ("k1".into(), Value::I64(1)),
+            ("k2".into(), Value::I64(2)),
+            ("k3".into(), Value::I64(3)),
+        ])
+    );
+}

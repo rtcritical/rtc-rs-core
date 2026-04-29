@@ -12,3 +12,9 @@ Rust `api` module naming:
 Path/ops surface:
 - `get_in`, `assoc_in`, `update_in` are string-path-first in `api`.
 - Index-heavy access should prefer vector helpers (`v_get`, `v_assoc`, `v_update`) so index key internals remain mostly opaque.
+
+
+Role split (intentional):
+- `m!` is the literal constructor at call sites (`m!()`, `m!(("k", v), ...)`).
+- `m_from` is the runtime ingest constructor from iterable tuple outputs
+  (e.g., map/reduce/filter pipelines, decoded/transformed records).

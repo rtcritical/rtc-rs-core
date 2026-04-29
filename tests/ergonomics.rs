@@ -1,5 +1,5 @@
 use rtc_rs_core::core::Value;
-use rtc_rs_core::ergonomic::{assoc_in, get_in, update_in};
+use rtc_rs_core::api::{assoc_in, get_in, update_in};
 use rtc_rs_core::{path, path_mixed};
 
 fn inc_nil(v: Value) -> Result<Value, rtc_rs_core::rtc_status> {

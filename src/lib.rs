@@ -1,5 +1,5 @@
 pub mod core;
-pub mod ergonomic;
+pub mod api;
 
 pub use core::{Key, Value, rtc_status};
 

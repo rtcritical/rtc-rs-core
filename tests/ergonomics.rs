@@ -37,3 +37,16 @@ fn update_in_str_nil_semantics() {
     let got = get_in(&out, &["cfg", "port"]).unwrap();
     assert_eq!(got, Value::I64(1));
 }
+
+
+#[test]
+fn constructor_helpers_smoke() {
+    use rtc_rs_core::api::{nil, b, i64v, f64v, s, vecv, mapv};
+    assert_eq!(nil(), Value::Nil);
+    assert_eq!(b(true), Value::Bool(true));
+    assert_eq!(i64v(7), Value::I64(7));
+    assert_eq!(f64v(1.5), Value::F64(1.5));
+    assert_eq!(s("x"), Value::Str("x".into()));
+    assert_eq!(vecv(vec![i64v(1)]), Value::Vec(vec![Value::I64(1)]));
+    assert_eq!(mapv(vec![("k".into(), i64v(1))]), Value::Map(vec![("k".into(), Value::I64(1))]));
+}

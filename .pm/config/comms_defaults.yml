@@ -9,15 +9,15 @@ profiles:
         enabled: true
         entrypoint: REPLACE_DISCORD_ENTRYPOINT
         preferred_surface: REPLACE_DISCORD_SURFACE
-        owner: REPLACE_OWNER
+        owner: Nick
       x:
         enabled: false
         account: REPLACE_X_ACCOUNT
-        owner: REPLACE_OWNER
+        owner: Nick
       org_surface:
         enabled: false
         endpoint: REPLACE_ORG_SURFACE_ENDPOINT
-        owner: REPLACE_OWNER
+        owner: Nick
     policy:
       require_repo_public_before_post: true
       record_post_urls_in_launch_checklist: true

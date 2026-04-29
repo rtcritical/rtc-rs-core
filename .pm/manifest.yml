@@ -1,10 +1,10 @@
 project:
   id: REPLACE_PROJECT_ID
-  name: REPLACE_PROJECT_NAME
+  name: rtc-rs-core
   lifecycle: intake
   repo: .
 owners:
-  primary: REPLACE_OWNER
+  primary: Nick
   agent: AGENT_NAME
 links:
   charter: .pm/charter.md

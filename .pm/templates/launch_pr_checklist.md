@@ -10,10 +10,10 @@ Use this checklist when making a project publicly visible and announcing it acro
 ## 2) Surface matrix (fill before posting)
 | Surface Type | Surface/Account | Owner | Status | Post URL | Notes |
 |---|---|---|---|---|---|
-| Community Discord (optional) | REPLACE_DISCORD_SURFACE | REPLACE_OWNER | planned | - | Use the project's relevant community entrypoint/surface |
-| X / Twitter (optional) | REPLACE_X_ACCOUNT | REPLACE_OWNER | planned | - | Include concise hook + repo link |
-| Organization-owned surface | REPLACE_ORG_SURFACE | REPLACE_OWNER | planned | - | Keep reusable for future projects |
-| Other | REPLACE_OPTIONAL_SURFACE | REPLACE_OWNER | optional | - | |
+| Community Discord (optional) | REPLACE_DISCORD_SURFACE | Nick | planned | - | Use the project's relevant community entrypoint/surface |
+| X / Twitter (optional) | REPLACE_X_ACCOUNT | Nick | planned | - | Include concise hook + repo link |
+| Organization-owned surface | REPLACE_ORG_SURFACE | Nick | planned | - | Keep reusable for future projects |
+| Other | REPLACE_OPTIONAL_SURFACE | Nick | optional | - | |
 
 ## 3) Message payload pack
 - [ ] Short blurb (1-2 lines)

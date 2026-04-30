@@ -22,3 +22,5 @@
 
 - Tag releases as `v*` (example: `v0.1.2`).
 - Release workflow publishes source/header artifacts and checksums.
+- Release notes are generated pre-publish and must pass category/assignment guards.
+- For v0 branch of work, treat scope as feature-frozen; prefer fixes/hardening/docs unless explicitly re-opening scope.

@@ -4,3 +4,37 @@ active_facets:
 merge_strategy: ordered-last-wins
 facet_source_policy:
   trusted_prefixes: []
+strict_authority_mode:
+  enabled: true
+  execution_mode:
+    preset: balanced
+    overrides:
+      require_open_question_taskization: true
+      require_task_execution_readiness: true
+  toggles:
+    require_open_question_taskization: true
+    require_task_execution_readiness: true
+  plugin_requirements:
+    fail_on_builtin_fallback: true
+  governed_scope:
+    include:
+    - '**'
+    exclude:
+    - .git/**
+    - .pm/generated/**
+    - .pm/runtime/**
+    - node_modules/**
+    - .venv/**
+    - dist/**
+    - build/**
+    - coverage/**
+    - tmp/**
+    - .tmp/**
+    - .cache/**
+  require_task_link: true
+  require_run_lock: true
+  require_status_marker: true
+  commit_gate:
+    require_task_evidence: true
+  exceptions:
+    require_explicit_approval: true

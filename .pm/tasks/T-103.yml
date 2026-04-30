@@ -1,0 +1,75 @@
+schema_version: 2
+task_id: T-103
+title: V1 Epic B - Reliability and callback/error hardening
+epic_id: E-103
+goal_ref: P1
+priority: P1
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T14:13:30Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T14:13:30Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-101
+scope_in:
+- Tighten ABI error taxonomy expectations and callback lifecycle guarantees.
+- Expand deterministic tests for failure contracts and edge cases.
+scope_out:
+- New language bindings beyond C ABI.
+acceptance_criteria:
+- Test suite explicitly covers targeted error/callback contracts.
+- No regression in existing ABI parity and consumer smoke paths.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- tests/abi_surface.rs
+- harness/consumer_smoke.c
+- harness/consumer_smoke_callback.c
+risk_tier: medium
+required_evidence:
+- cargo test --tests
+- ./scripts/check_abi_parity.py
+timebox: not_applicable
+rollback_plan: Revert hardening slices that destabilize callback or error semantics.
+notes:
+- Epic container task; execution tasks should be split by error-contract and callback-contract slices.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Increase confidence in runtime behavior under adverse and edge-case inputs.
+  scope:
+    - Expand error-path test matrix.
+    - Harden callback lifecycle coverage.
+  constraints:
+    - Avoid introducing breaking ABI changes in v1 line.
+  assumptions:
+    - Existing callback APIs remain stable across v1.
+  decision_rationale: Reliability risk is the largest blocker to broader adoption.
+  alternatives_considered:
+    - Rely on existing tests only (rejected: insufficient edge coverage)
+    - Defer hardening until after packaging (rejected: quality risk)
+  dependencies:
+    - Stable CI signal from v0 baseline.
+  acceptance_criteria:
+    - Child hardening tasks complete with explicit evidence.
+  validation_plan:
+    - Run full tests + targeted ABI surface checks on each slice.
+  rollback_risk:
+    - Medium; behavioral changes can alter client expectations.
+  open_questions:
+    - Should we formalize machine-readable error contract tables in docs/spec?

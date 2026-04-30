@@ -1,0 +1,75 @@
+schema_version: 2
+task_id: T-102
+title: V1 Epic A - Packaging and distribution ergonomics
+epic_id: E-102
+goal_ref: P1
+priority: P1
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T14:13:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T14:13:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-101
+scope_in:
+- Define and implement cross-platform consumer packaging outputs and verification paths.
+- Document supported artifact model and quickstart consumption flows.
+scope_out:
+- Breaking ABI changes.
+- Major API redesign beyond v0 compatibility constraints.
+acceptance_criteria:
+- Release outputs and docs cover intended v1 consumer onboarding path.
+- CI has deterministic checks for any added distribution artifacts.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- docs/post-v0-roadmap.md
+- docs/v0-closeout.md
+risk_tier: medium
+required_evidence:
+- cargo test --tests
+- ./scripts/check_abi_parity.py
+timebox: not_applicable
+rollback_plan: Revert packaging changes and restore prior release workflow behavior.
+notes:
+- Epic container task; implementation should be split into child execution tasks before coding.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Deliver a frictionless consumer distribution story for v1.
+  scope:
+    - Define target artifact matrix.
+    - Add CI/release plumbing and docs for consumers.
+  constraints:
+    - Preserve current release reliability and security posture.
+  assumptions:
+    - Current consumers primarily rely on source/header/static artifacts.
+  decision_rationale: Packaging ergonomics is the highest adoption lever after v0 stabilization.
+  alternatives_considered:
+    - Delay packaging work to post-v1 (rejected: slows adoption)
+    - Ship binaries without policy/docs (rejected: support risk)
+  dependencies:
+    - Existing release workflow and policy jobs.
+  acceptance_criteria:
+    - Execution tasks under this epic reach done with validation evidence.
+  validation_plan:
+    - Validate per-child task gates and end-to-end release dry run.
+  rollback_risk:
+    - Medium; workflow complexity can cause release regressions.
+  open_questions:
+    - Which platform matrix is mandatory for v1 vs best-effort?

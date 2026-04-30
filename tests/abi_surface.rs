@@ -233,15 +233,13 @@ fn abi_cross_context_inputs_rejected() {
 
 #[test]
 fn abi_double_free_rejected() {
-    unsafe {
-        let mut ctx: *mut rtc_ctx = ptr::null_mut();
-        assert_eq!(rtc_ctx_new(&mut ctx), rtc_status::RTC_OK);
-        let mut v: *mut rtc_val = ptr::null_mut();
-        assert_eq!(rtc_i64(ctx, 1, &mut v), rtc_status::RTC_OK);
-        assert_eq!(rtc_val_free(v), rtc_status::RTC_OK);
-        assert_eq!(rtc_val_free(v), rtc_status::RTC_ERR_INVALID_ARG);
-        assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
-    }
+    let mut ctx: *mut rtc_ctx = ptr::null_mut();
+    assert_eq!(rtc_ctx_new(&mut ctx), rtc_status::RTC_OK);
+    let mut v: *mut rtc_val = ptr::null_mut();
+    assert_eq!(rtc_i64(ctx, 1, &mut v), rtc_status::RTC_OK);
+    assert_eq!(rtc_val_free(v), rtc_status::RTC_OK);
+    assert_eq!(rtc_val_free(v), rtc_status::RTC_ERR_INVALID_ARG);
+    assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
 }
 
 #[test]

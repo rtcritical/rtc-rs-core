@@ -49,7 +49,6 @@ def parse_categories(path: Path):
 
 
 def infer_repo_slug():
-    # expects github.com/org/repo(.git)
     url = run(["git", "remote", "get-url", "origin"])
     m = re.search(r"github\.com[:/]+([^/]+)/([^/.]+)(?:\.git)?$", url)
     if not m:
@@ -57,7 +56,7 @@ def infer_repo_slug():
     return f"{m.group(1)}/{m.group(2)}"
 
 
-def gh_get_pr_labels(repo_slug, pr_num, token):
+def gh_get_pr(repo_slug, pr_num, token):
     url = f"https://api.github.com/repos/{repo_slug}/pulls/{pr_num}"
     req = urllib.request.Request(
         url,
@@ -69,7 +68,12 @@ def gh_get_pr_labels(repo_slug, pr_num, token):
     )
     with urllib.request.urlopen(req) as r:
         data = json.loads(r.read().decode())
-    return [x.get("name", "").lower() for x in data.get("labels", [])]
+    return {
+        "number": data.get("number"),
+        "title": (data.get("title") or "").strip(),
+        "html_url": data.get("html_url"),
+        "labels": [x.get("name", "").lower() for x in data.get("labels", [])],
+    }
 
 
 def category_for_labels(labels, categories):
@@ -84,6 +88,13 @@ def category_for_labels(labels, categories):
         if "*" in c["labels"]:
             return c["title"]
     return "Other Changes"
+
+
+def build_fallback_bullet(subject: str):
+    pr = re.search(r"#(\d+)", subject)
+    if pr:
+        return f"{subject} (#{pr.group(1)})"
+    return subject
 
 
 def main():
@@ -104,16 +115,20 @@ def main():
     buckets = {c["title"]: [] for c in cats}
 
     for subject in lines:
-        pr = re.search(r"#(\d+)", subject)
+        pr_match = re.search(r"#(\d+)", subject)
+        pr_num = pr_match.group(1) if pr_match else None
+
+        pr_meta = None
         labels = []
-        if token and repo_slug and pr:
+        if token and repo_slug and pr_num:
             try:
-                labels = gh_get_pr_labels(repo_slug, pr.group(1), token)
+                pr_meta = gh_get_pr(repo_slug, pr_num, token)
+                labels = pr_meta["labels"]
             except Exception:
+                pr_meta = None
                 labels = []
 
         title = category_for_labels(labels, cats)
-        # fallback heuristic only if no labels found
         if not labels:
             l = subject.lower()
             if "docs" in l:
@@ -123,7 +138,12 @@ def main():
             elif "feat" in l or "enh" in l or "feature" in l:
                 title = next((c["title"] for c in cats if "feature" in c["labels"] or "enhancement" in c["labels"]), title)
 
-        buckets.setdefault(title, []).append(subject)
+        if pr_meta and pr_meta.get("title") and pr_meta.get("number"):
+            bullet = f"{pr_meta['title']} (#{pr_meta['number']})"
+        else:
+            bullet = build_fallback_bullet(subject)
+
+        buckets.setdefault(title, []).append(bullet)
 
     total_assigned = sum(len(v) for v in buckets.values())
     if lines and total_assigned == 0:

@@ -83,6 +83,7 @@ cat dist/release_notes.md
 Guardrail behavior:
 - If merge commits exist in the release range, the script fails if categorization would emit zero assigned entries.
 - This prevents silently publishing an empty-categories release note due to parsing/regression errors.
+- When GitHub API metadata is available, bullets use PR titles (`<title> (#<n>)`) instead of raw merge commit subjects.
 
 ## License
 

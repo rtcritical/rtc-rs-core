@@ -9,3 +9,10 @@ Planning/specification phase with PM-managed execution.
 ## Source of truth
 - ADR and specs under `docs/`
 - PM workflow under `.pm/`
+
+
+### Perf baseline
+
+```bash
+./scripts/run_perf_baseline.sh
+```

@@ -1,0 +1,22 @@
+# v0 ABI symbol baseline
+rtc_as_bool
+rtc_as_f64
+rtc_as_i64
+rtc_as_string
+rtc_bool
+rtc_ctx_free
+rtc_ctx_new
+rtc_f64
+rtc_get
+rtc_get_in
+rtc_i64
+rtc_kind_of
+rtc_last_error_code
+rtc_last_error_message
+rtc_nassoc
+rtc_nassoc_in
+rtc_nil
+rtc_nupdate
+rtc_nupdate_in
+rtc_string
+rtc_val_free

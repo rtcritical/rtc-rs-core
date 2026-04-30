@@ -45,6 +45,7 @@ Operations:
 ## Source of truth
 - ADR and specs under `docs/`
 - v0 closeout matrix in `docs/v0-closeout.md`
+- ABI compatibility policy in `docs/abi-compat-policy.md`
 - PM workflow under `.pm/`
 
 ## Tests

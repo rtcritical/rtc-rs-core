@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Post-v0 roadmap (`docs/post-v0-roadmap.md`) and first-execution focus on ABI compatibility policy enforcement.
+- ABI compatibility policy doc (`docs/abi-compat-policy.md`) and CI guard (`scripts/check_abi_compat_policy.py`) anchored to `docs/spec/abi-v0-symbol-baseline.txt`.
 - v0 closeout checklist and acceptance matrix (`docs/v0-closeout.md`) documenting freeze scope, validation gates, consumer smoke expectations, and release-readiness exit criteria.
 - Release notes now prefer PR-title bullets (`<title> (#<n>)`) when GitHub metadata is available, improving readability over raw merge-subject lines.
 - Release-notes prep guardrail now fails when merge commits exist but categorization would produce zero assigned entries, preventing silent empty-note regressions.

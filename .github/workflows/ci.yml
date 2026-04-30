@@ -63,3 +63,5 @@ jobs:
         run: ./scripts/check_changelog.sh
       - name: ABI parity policy
         run: ./scripts/check_abi_parity.py
+      - name: ABI compatibility policy
+        run: ./scripts/check_abi_compat_policy.py

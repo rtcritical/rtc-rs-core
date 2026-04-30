@@ -83,6 +83,14 @@ unsafe extern "C" fn cb_return_type_err(_ctx: *mut rtc_ctx, _current: *const rtc
     rtc_status::RTC_ERR_TYPE
 }
 
+unsafe extern "C" fn cb_return_foreign_ctx_val(_ctx: *mut rtc_ctx, _current: *const rtc_val, ud: *mut std::ffi::c_void, out_next: *mut *mut rtc_val) -> rtc_status {
+    let foreign_ctx = ud as *mut rtc_ctx;
+    if foreign_ctx.is_null() {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    rtc_i64(foreign_ctx, 99, out_next)
+}
+
 #[test]
 fn abi_update_in_null_next_sets_state_error() {
     unsafe {
@@ -258,5 +266,28 @@ fn abi_use_after_free_root_rejected() {
         assert!(out.is_null());
 
         assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
+    }
+}
+
+#[test]
+fn abi_update_callback_returning_foreign_ctx_val_rejected() {
+    unsafe {
+        let mut c1: *mut rtc_ctx = ptr::null_mut();
+        let mut c2: *mut rtc_ctx = ptr::null_mut();
+        assert_eq!(rtc_ctx_new(&mut c1), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_new(&mut c2), rtc_status::RTC_OK);
+
+        let mut root: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_nil(c1, &mut root), rtc_status::RTC_OK);
+
+        let (_ks, k) = make_str_key("x");
+        let mut out: *mut rtc_val = 1usize as *mut rtc_val;
+        let st = rtc_nupdate(c1, root, k, Some(cb_return_foreign_ctx_val), c2 as *mut std::ffi::c_void, &mut out);
+        assert_eq!(st, rtc_status::RTC_ERR_INVALID_ARG);
+        assert!(out.is_null());
+
+        assert_eq!(rtc_val_free(root), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(c2), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(c1), rtc_status::RTC_OK);
     }
 }

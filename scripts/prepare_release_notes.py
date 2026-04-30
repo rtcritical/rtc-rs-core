@@ -16,6 +16,13 @@ def run(cmd):
     return subprocess.check_output(cmd, cwd=ROOT, text=True).strip()
 
 
+def run_optional(cmd):
+    try:
+        return run(cmd)
+    except subprocess.CalledProcessError:
+        return None
+
+
 def parse_categories(path: Path):
     cats = []
     in_changelog = False
@@ -103,10 +110,11 @@ def main():
         print("No categories parsed", file=sys.stderr)
         sys.exit(1)
 
-    prev_tag = run(["git", "describe", "--tags", "--abbrev=0", "HEAD^"])
+    prev_tag = run_optional(["git", "describe", "--tags", "--abbrev=0", "HEAD^"])
     head = run(["git", "rev-parse", "--short", "HEAD"])
 
-    merges = run(["git", "log", "--merges", "--pretty=%s", f"{prev_tag}..HEAD"])
+    log_range = f"{prev_tag}..HEAD" if prev_tag else "HEAD"
+    merges = run(["git", "log", "--merges", "--pretty=%s", log_range])
     lines = [x.strip() for x in merges.splitlines() if x.strip()]
 
     token = os.getenv("GITHUB_TOKEN")

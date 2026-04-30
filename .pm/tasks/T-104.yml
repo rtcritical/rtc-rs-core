@@ -4,7 +4,7 @@ title: V1 Epic C - Release governance and automation quality
 epic_id: E-104
 goal_ref: P1
 priority: P2
-status: todo
+status: in_progress
 owner:
   type: human
   id: nick
@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T19:40:00Z'
+updated_at: '2026-04-30T20:45:40Z'
 updated_by:
   type: agent
   id: clio
@@ -48,8 +48,9 @@ required_evidence:
 timebox: not_applicable
 rollback_plan: Roll back workflow/procedure edits if guardrails block legitimate emergency fixes.
 notes:
-- Epic container task for governance and release-automation durability improvements.
+- Epic container task decomposed into T-109 (release runbook/incident handling) and T-110 (local-vs-CI governance parity).
 - Includes ABI compatibility policy guard and post-v0 roadmap/spec baselines in this slice.
+- No implementation executed in this planning pass.
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md

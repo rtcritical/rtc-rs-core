@@ -8,3 +8,19 @@ questions:
     task_id: T-101
     resolved_by: nick
     resolved_at_utc: '2026-04-30T14:10:00Z'
+  - id: OQ-2026-04-30-t106-packaging-gate-scope
+    prompt: "Should packaging gate be required on PRs or release-only?"
+    status: approved
+    decision: require_pr_and_release
+    rationale: "Early PR enforcement prevents late release-only surprises and keeps packaging contract continuously green."
+    task_id: T-106
+    resolved_by: nick
+    resolved_at_utc: '2026-04-30T20:59:00Z'
+  - id: OQ-2026-04-30-release-notes-no-tag-baseline
+    prompt: "Should release-notes generation fail when no baseline tag exists on repository history?"
+    status: approved
+    decision: allow_no_tag_fallback
+    rationale: "PR policy checks must be robust on repos/branches without reachable tags; fallback to merge-log over HEAD avoids false failures."
+    task_id: T-106
+    resolved_by: nick
+    resolved_at_utc: '2026-04-30T22:29:00Z'

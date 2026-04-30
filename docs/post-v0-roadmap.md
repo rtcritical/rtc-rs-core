@@ -12,6 +12,7 @@ Move from validated v0 baseline into predictable v0.x iteration with explicit pr
 - Keep canonical source+headers artifacts.
 - Add optional prebuilt artifacts by platform/arch for faster consumer adoption.
 - Gate: release workflow publishes matrix artifacts with checksums and manifest.
+- Contract baseline: `docs/release-packaging-contract-v1.md`.
 
 ### A2. Consumer quickstart bundle
 - Provide minimal examples for static + shared linking per platform.

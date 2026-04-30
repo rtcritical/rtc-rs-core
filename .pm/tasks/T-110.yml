@@ -1,0 +1,75 @@
+schema_version: 2
+task_id: T-110
+title: V1.C2 - Governance guard consistency across local hooks and CI
+epic_id: E-104
+goal_ref: P1
+priority: P2
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T20:44:30Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T20:44:30Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-109
+scope_in:
+- Audit and align PM/governance checks between local hooks and CI contexts.
+- Document permitted emergency bypass path with expiry/cleanup expectation.
+- Eliminate known drift vectors that allow policy intent bypass.
+scope_out:
+- New policy domains unrelated to PM/release governance.
+acceptance_criteria:
+- Guard matrix documented with local vs CI coverage map.
+- Bypass policy is explicit, auditable, and minimally permissive.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- .github/workflows/ci.yml
+- .githooks/pre-commit
+- .pm/policies
+risk_tier: low
+required_evidence:
+- guard matrix doc
+- CI/local check proof samples
+timebox: not_applicable
+rollback_plan: Revert governance wiring changes that block legitimate contributor flow.
+notes:
+- Completes E-104 by making governance behavior predictable in all execution contexts.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Prevent policy drift between developer and CI paths.
+  scope:
+  - Guard parity mapping.
+  - Bypass governance documentation.
+  constraints:
+  - Preserve contributor usability.
+  assumptions:
+  - CI remains required gate for merge.
+  decision_rationale: Consistency reduces surprise failures and emergency bypass misuse.
+  alternatives_considered:
+  - Leave current mixed behavior (rejected)
+  dependencies:
+  - T-109
+  acceptance_criteria:
+  - Parity and bypass rules are explicit and enforced.
+  validation_plan:
+  - Local hook run + CI run evidence.
+  rollback_risk:
+  - low
+  open_questions:
+  - Do we require periodic guard matrix audits as recurring task?

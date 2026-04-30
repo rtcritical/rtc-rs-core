@@ -1,0 +1,74 @@
+schema_version: 2
+task_id: T-107
+title: V1.B1 - Formalize error contract expectations and edge-case tests
+epic_id: E-103
+goal_ref: P1
+priority: P1
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T20:43:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T20:43:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-103
+scope_in:
+- Define canonical error taxonomy/expectations for C ABI operations.
+- Add/extend deterministic tests for error edge cases and invalid input handling.
+- Ensure docs/spec align with observed runtime behavior.
+scope_out:
+- New public API expansion unrelated to error-contract clarity.
+acceptance_criteria:
+- Error expectations documented and test-covered for target operations.
+- No ABI parity regressions.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- tests/abi_surface.rs
+- scripts/check_abi_parity.py
+risk_tier: medium
+required_evidence:
+- cargo test --tests
+- ./scripts/check_abi_parity.py
+timebox: not_applicable
+rollback_plan: Revert hardening deltas that change expected consumer-visible behavior unintentionally.
+notes:
+- Focus on deterministic negative-path coverage.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Make error behavior explicit and stable for consumers.
+  scope:
+  - Error docs/spec alignment.
+  - Targeted tests.
+  constraints:
+  - Preserve ABI compatibility.
+  assumptions:
+  - Current symbols are sufficient for v1.
+  decision_rationale: Error ambiguity drives integration failures and support load.
+  alternatives_considered:
+  - Keep implicit behavior in tests only (rejected)
+  dependencies:
+  - T-103
+  acceptance_criteria:
+  - Contract + tests accepted.
+  validation_plan:
+  - Full tests + parity + smoke.
+  rollback_risk:
+  - medium
+  open_questions:
+  - Do we need a machine-readable error contract table in docs/spec?

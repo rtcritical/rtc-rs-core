@@ -65,3 +65,9 @@ jobs:
         run: ./scripts/check_abi_parity.py
       - name: ABI compatibility policy
         run: ./scripts/check_abi_compat_policy.py
+      - name: Packaging contract gate
+        run: ./scripts/check_packaging_contract.sh
+      - name: Release notes generation gate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/prepare_release_notes.py

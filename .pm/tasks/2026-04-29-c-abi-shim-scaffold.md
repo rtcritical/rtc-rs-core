@@ -1,7 +1,7 @@
 # Task: C ABI shim scaffold
 
 - **Owner:** Nick + Clio
-- **Status:** IN_PROGRESS
+- **Status:** DONE
 - **Goal:** Create strict C ABI shim boundary matching `docs/spec/v0-nucleus.h`.
 - **Acceptance:**
   - exported symbol map draft
@@ -13,23 +13,11 @@
 - Added Rust `extern "C"` shim skeleton with strict status enum and context lifecycle fns.
 - Added baseline constructor surface (`rtc_nil`, `rtc_bool`, `rtc_i64`, `rtc_f64`, `rtc_strn`) and value free helper.
 - Copied frozen ABI draft header into `include/v0-nucleus.h` for alignment review.
-
-- rtc_get_ex/rtc_get_in_ex wired to core ops.
-
-- rtc_assoc_ex/rtc_assoc_in_ex wired to core ops.
-
-- rtc_update_ex/rtc_update_in_ex wired to core ops.
-
-- Added user-object extension direction as non-nucleus additive spec (v1).
-
+- `rtc_get_ex`/`rtc_get_in_ex` wired to core ops.
+- `rtc_nassoc_ex`/`rtc_nassoc_in_ex` wired to core ops.
+- `rtc_nupdate_ex`/`rtc_nupdate_in_ex` wired to core ops.
 - Added direct ABI surface integration tests (`tests/abi_surface.rs`).
+- Added callback edge-case tests for update/update_in error paths.
 
-- Parity runner stubs replaced with executing vector cases and api/core comparator checks.
-
-
-Status: DONE
-
-Closure evidence:
-- Added direct ABI callback edge-case tests for update/update_in error paths.
-- Replaced parity stubs with active runner/comparator and added m!/m_from parity coverage.
-- cargo test --tests passing on full suite.
+## Closure evidence
+- `cargo test --tests` passing on full suite.

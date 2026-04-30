@@ -33,7 +33,7 @@ ADR can be marked **Accepted** only when all required gates below are satisfied 
 
 Artifacts:
 - `docs/adr-c-vs-rust-working.md`
-- `docs/spec/v0-nucleus.h`
+- `docs/spec/core_v0.h`
 
 ---
 

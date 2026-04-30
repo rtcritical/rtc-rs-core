@@ -22,5 +22,5 @@ Role split (intentional):
 
 Mutable naming (Common Lisp-style n*):
 - API primary mutable ops: `nassoc`, `nassoc_in`, `nupdate`, `nupdate_in`
-- ABI primary mutable ops: `rtc_nassoc_ex`, `rtc_nassoc_in_ex`, `rtc_nupdate_ex`, `rtc_nupdate_in_ex`
+- ABI primary mutable ops: `rtc_nassoc`, `rtc_nassoc_in`, `rtc_nupdate`, `rtc_nupdate_in`
 - No legacy mutable aliases are exported. Mutable API/ABI uses explicit `n*` names only.

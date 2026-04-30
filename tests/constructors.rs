@@ -32,12 +32,13 @@ fn map_from_last_write_wins_via_assoc_path() {
 
 #[test]
 fn vector_index_helpers_bounds_and_growth() {
+    use rtc_rs_core::core::{get, assoc, Key};
     let vv = v_from(vec![i(1)]);
-    assert_eq!(v_get(&vv, 9).unwrap(), nil());
+    assert_eq!(get(&vv, &Key::Index(9)).unwrap(), nil());
 
-    let vv2 = v_assoc(&vv, 3, i(7)).unwrap();
-    assert_eq!(v_get(&vv2, 3).unwrap(), i(7));
-    assert_eq!(v_get(&vv2, 1).unwrap(), nil());
+    let vv2 = assoc(&vv, &Key::Index(3), i(7)).unwrap();
+    assert_eq!(get(&vv2, &Key::Index(3)).unwrap(), i(7));
+    assert_eq!(get(&vv2, &Key::Index(1)).unwrap(), nil());
 }
 
 

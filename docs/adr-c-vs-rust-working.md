@@ -496,7 +496,7 @@ Directional outcome (v2): Rust-core + strict C ABI remains preferred, with stron
 
 ## Related Specs and Artifacts
 
-- `docs/spec/v0-nucleus.h`
+- `docs/spec/core_v0.h`
 - `docs/spec/wrapper-parity-tests.md`
 - `docs/spec/parity-vectors-v0.md`
 - `docs/spec/wrapper-status-mapping-template-v0.md`

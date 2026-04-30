@@ -305,7 +305,7 @@ pub extern "C" fn rtc_f64(ctx: *mut rtc_ctx, n: f64, out: *mut *mut rtc_val) -> 
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn rtc_strn(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out: *mut *mut rtc_val) -> rtc_status {
+pub extern "C" fn rtc_string(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out: *mut *mut rtc_val) -> rtc_status {
     if ctx.is_null() || s.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -317,7 +317,7 @@ pub extern "C" fn rtc_strn(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out: *
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn rtc_get_ex(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, out: *mut *mut rtc_val) -> rtc_status {
+pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, out: *mut *mut rtc_val) -> rtc_status {
     if root.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -333,7 +333,7 @@ pub extern "C" fn rtc_get_ex(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn rtc_get_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, out: *mut *mut rtc_val) -> rtc_status {
+pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, out: *mut *mut rtc_val) -> rtc_status {
     if root.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -365,7 +365,7 @@ pub extern "C" fn rtc_get_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path: r
 
 
 #[unsafe(no_mangle)]
-pub extern "C" fn rtc_nassoc_ex(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
+pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
     if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -385,7 +385,7 @@ pub extern "C" fn rtc_nassoc_ex(ctx: *mut rtc_ctx, root: *const rtc_val, key: rt
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn rtc_nassoc_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
+pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
     if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -415,7 +415,7 @@ pub extern "C" fn rtc_nassoc_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path
 
 
 #[unsafe(no_mangle)]
-pub extern "C" fn rtc_nupdate_ex(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
+pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
     if ctx.is_null() || root.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -446,7 +446,7 @@ pub extern "C" fn rtc_nupdate_ex(ctx: *mut rtc_ctx, root: *const rtc_val, key: r
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn rtc_nupdate_in_ex(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
+pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
     if ctx.is_null() || root.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }

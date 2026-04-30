@@ -1,11 +1,12 @@
 schema_version: 1
-resolved_at: '2026-04-30T14:58:19Z'
+resolved_at: '2026-04-30T15:05:38Z'
 resolver_version: facet-resolver-v0
 merge_strategy: ordered-last-wins
 active_facets:
 - pm.governance.core
 - pm.execution.readiness
 - github.core
+- github.release-ops
 diagnostics:
 - level: info
   code: facet.applied
@@ -19,6 +20,10 @@ diagnostics:
   code: facet.applied
   message: applied contributions from github.core
   facet: github.core
+- level: info
+  code: facet.applied
+  message: applied contributions from github.release-ops
+  facet: github.release-ops
 merged:
   checks:
   - id: rtc-github-spec-present
@@ -33,6 +38,15 @@ merged:
   - id: rtc-github-checklist-present
     path: .pm/templates/rtc-github-project-setup-checklist.md
     type: file_exists
+  - id: rtc-github-release-policy-present
+    path: .pm/policies/rtc-github-release-ops-policy.md
+    type: file_exists
+  - id: rtc-github-release-runbook-present
+    path: .pm/procedures/rtc-github-release-ops-runbook.md
+    type: file_exists
+  - id: rtc-github-release-checklist-present
+    path: .pm/templates/rtc-github-release-verification-checklist.md
+    type: file_exists
   files:
     .pm/policies/rtc-github-governance-policy.md: '# Policy - RTC GitHub Governance
 
@@ -44,6 +58,21 @@ merged:
       - Release workflows must be auditable and reproducible.
 
       - External GitHub mutations must run through approved ops tooling.
+
+      '
+    .pm/policies/rtc-github-release-ops-policy.md: '# Policy - RTC GitHub Release
+      Ops
+
+
+      - Release tags (`v*`) must be reproducible from git state and workflow evidence.
+
+      - Release notes generation must be deterministic and validated in CI.
+
+      - Tag ruleset bypass, when required, must be least-privilege and explicitly
+      documented.
+
+      - Failed release attempts should be superseded by a new tag/version; avoid mutating
+      published tags.
 
       '
     .pm/procedures/rtc-github-governance-runbook.md: '# Procedure - RTC GitHub Governance
@@ -62,6 +91,21 @@ merged:
 
       5. Use `github-ops` skill for GitHub API mutations; record evidence refs in
       PM tasks.
+
+      '
+    .pm/procedures/rtc-github-release-ops-runbook.md: '# Procedure - RTC GitHub Release
+      Ops Runbook
+
+
+      1. Validate PM state and release task evidence before tagging.
+
+      2. Verify checkout depth and tag/history requirements for release notes generation.
+
+      3. Cut a real `v*` tag and verify workflow completion + asset publication.
+
+      4. If release fails, capture root cause, patch in PR, and cut next patch tag.
+
+      5. Record release IDs, URLs, and workflow run IDs in task evidence.
 
       '
     .pm/specs/rtc-github-governance-spec.md: '# RTC GitHub Governance Spec
@@ -103,6 +147,21 @@ merged:
       - [ ] tag ruleset bypass policy documented (if applicable)
 
       - [ ] PM task evidence includes setup/run outputs
+
+      '
+    .pm/templates/rtc-github-release-verification-checklist.md: '# RTC GitHub Release
+      Verification Checklist
+
+
+      - [ ] release workflow completed successfully
+
+      - [ ] release is non-draft and non-prerelease (unless explicitly intended)
+
+      - [ ] expected assets published
+
+      - [ ] notes contain expected sections/categories
+
+      - [ ] release URL and ID recorded in PM evidence
 
       '
   overlays:

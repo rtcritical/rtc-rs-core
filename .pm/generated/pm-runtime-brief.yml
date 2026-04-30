@@ -40,6 +40,13 @@ active_facets:
   mode: copy
   path: /home/node/.openclaw/workspace/projects/rtc-rs-core/.pm/facets/github.core
   required_reads: []
+- id: github.release-ops
+  version: 1.0.0
+  digest: sha256:93e08a5232afc72ae78e219aed89b831293092c4472e539aa31262ed7a021410
+  source: /home/node/.openclaw/workspace/projects/rtc-openclaw-project-mgmt-facet-github/facets/github.release-ops
+  mode: copy
+  path: /home/node/.openclaw/workspace/projects/rtc-rs-core/.pm/facets/github.release-ops
+  required_reads: []
 facet_overlay_required_reads:
 - .pm/facets/pm.execution.readiness/policies/PM_EXECUTION_READINESS_POLICY_V1.md
 - .pm/facets/pm.execution.readiness/procedures/PM_EXECUTION_READINESS_RUNBOOK_V1.md

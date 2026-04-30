@@ -1,7 +1,14 @@
 schema_version: 1
-generated_at: '2026-04-28T17:38:33Z'
+generated_at: '2026-04-30T14:53:55Z'
 resolver_version: facet-lifecycle-v0
 facets:
+- id: github.core
+  version: 1.0.0
+  source: /home/node/.openclaw/workspace/projects/rtc-openclaw-project-mgmt-facet-github/facets/github.core
+  digest: sha256:c27b502ad8bdd58747ee13067d943b1b9e93c8b8ff923fa98e7541470454f64e
+  installed_at: '2026-04-30T14:53:55Z'
+  mode: copy
+  path: /home/node/.openclaw/workspace/projects/rtc-rs-core/.pm/facets/github.core
 - id: pm.execution.readiness
   version: 1.0.0
   source: local://pm-execution-readiness

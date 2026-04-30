@@ -1,6 +1,7 @@
 active_facets:
 - pm.governance.core
 - pm.execution.readiness
+- github.core
 merge_strategy: ordered-last-wins
 facet_source_policy:
   trusted_prefixes: []

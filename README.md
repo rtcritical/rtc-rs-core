@@ -52,12 +52,18 @@ Operations:
 cargo test --tests
 ```
 
-## Consumer C smoke harness
+## Consumer C smoke harnesses
 
 ```bash
 cargo build --release
+
+# Static-link smoke
 gcc -std=c11 -Wall -Wextra -Iinclude harness/consumer_smoke.c target/release/librtc_rs_core.a -lpthread -ldl -lm -o /tmp/consumer_smoke
 /tmp/consumer_smoke
+
+# Shared-lib + callback smoke
+gcc -std=c11 -Wall -Wextra -Iinclude harness/consumer_smoke_callback.c -Ltarget/release -lrtc_rs_core -lpthread -ldl -lm -o /tmp/consumer_smoke_callback
+LD_LIBRARY_PATH=target/release /tmp/consumer_smoke_callback
 ```
 
 ## Perf baseline

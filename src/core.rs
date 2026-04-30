@@ -2,9 +2,11 @@
 
 #![allow(non_camel_case_types)]
 
+use std::collections::HashSet;
 use std::ffi::{c_char, c_int};
 use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::ptr;
+use std::sync::{Mutex, OnceLock};
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Value {
@@ -194,6 +196,22 @@ pub struct rtc_ctx {
 #[repr(C)]
 pub struct rtc_val {
     inner: Value,
+    owner_ctx: *mut rtc_ctx,
+}
+
+fn live_ctxs() -> &'static Mutex<HashSet<usize>> {
+    static LIVE: OnceLock<Mutex<HashSet<usize>>> = OnceLock::new();
+    LIVE.get_or_init(|| Mutex::new(HashSet::new()))
+}
+
+fn ctx_is_live(ctx: *mut rtc_ctx) -> bool {
+    if ctx.is_null() { return false; }
+    live_ctxs().lock().map(|m| m.contains(&(ctx as usize))).unwrap_or(false)
+}
+
+fn val_belongs_to_ctx(ctx: *mut rtc_ctx, v: *const rtc_val) -> bool {
+    if ctx.is_null() || v.is_null() || !ctx_is_live(ctx) { return false; }
+    unsafe { (*v).owner_ctx == ctx }
 }
 
 fn set_error(ctx: *mut rtc_ctx, code: rtc_status, msg: &str) {
@@ -238,6 +256,7 @@ pub extern "C" fn rtc_ctx_new(out_ctx: *mut *mut rtc_ctx) -> rtc_status {
         last_error_msg: String::new(),
     });
     unsafe { *out_ctx = Box::into_raw(ctx) };
+    let _ = live_ctxs().lock().map(|mut m| { m.insert(unsafe { *out_ctx } as usize); });
     rtc_status::RTC_OK
 }
 
@@ -246,6 +265,7 @@ pub extern "C" fn rtc_ctx_free(ctx: *mut rtc_ctx) -> rtc_status {
     if ctx.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
+    let _ = live_ctxs().lock().map(|mut m| { m.remove(&(ctx as usize)); });
     unsafe { drop(Box::from_raw(ctx)) };
     rtc_status::RTC_OK
 }
@@ -279,7 +299,7 @@ pub extern "C" fn rtc_nil(ctx: *mut rtc_ctx, out: *mut *mut rtc_val) -> rtc_stat
     if ctx.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
-    let v = Box::new(rtc_val { inner: Value::Nil });
+    let v = Box::new(rtc_val { inner: Value::Nil, owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
     rtc_status::RTC_OK
 }
@@ -290,7 +310,7 @@ pub extern "C" fn rtc_bool(ctx: *mut rtc_ctx, b: c_int, out: *mut *mut rtc_val) 
     if ctx.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
-    let v = Box::new(rtc_val { inner: Value::Bool(b != 0) });
+    let v = Box::new(rtc_val { inner: Value::Bool(b != 0), owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
     rtc_status::RTC_OK
 }
@@ -301,7 +321,7 @@ pub extern "C" fn rtc_i64(ctx: *mut rtc_ctx, n: i64, out: *mut *mut rtc_val) -> 
     if ctx.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
-    let v = Box::new(rtc_val { inner: Value::I64(n) });
+    let v = Box::new(rtc_val { inner: Value::I64(n), owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
     rtc_status::RTC_OK
 }
@@ -312,7 +332,7 @@ pub extern "C" fn rtc_f64(ctx: *mut rtc_ctx, n: f64, out: *mut *mut rtc_val) -> 
     if ctx.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
-    let v = Box::new(rtc_val { inner: Value::F64(n) });
+    let v = Box::new(rtc_val { inner: Value::F64(n), owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
     rtc_status::RTC_OK
 }
@@ -325,7 +345,7 @@ pub extern "C" fn rtc_string(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out:
     }
     let bytes = unsafe { std::slice::from_raw_parts(s as *const u8, len as usize) };
     let st = String::from_utf8_lossy(bytes).to_string();
-    let v = Box::new(rtc_val { inner: Value::Str(st) });
+    let v = Box::new(rtc_val { inner: Value::Str(st), owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
     rtc_status::RTC_OK
 }
@@ -340,7 +360,7 @@ pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key
     let r = unsafe { &(*root).inner };
     match get(r, &k) {
         Ok(v) => {
-            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v })) };
+            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) };
             rtc_status::RTC_OK
         }
         Err(e) => e,
@@ -368,7 +388,7 @@ pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_
     let r = unsafe { &(*root).inner };
     match get_in(r, &ks) {
         Ok(v) => {
-            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v })) };
+            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) };
             rtc_status::RTC_OK
         }
         Err(e) => {
@@ -386,12 +406,16 @@ pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_k
     if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
+    if !ctx_is_live(ctx) || !val_belongs_to_ctx(ctx, root) || !val_belongs_to_ctx(ctx, val) {
+        set_error(ctx, rtc_status::RTC_ERR_INVALID_ARG, "context/value ownership mismatch");
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     let k = unsafe { match key_from_ffi(&key) { Ok(x) => x, Err(e) => return e } };
     let r = unsafe { &(*root).inner };
     let v = unsafe { (*val).inner.clone() };
     match assoc(r, &k, v) {
         Ok(nv) => {
-            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: nv })) };
+            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: nv, owner_ctx: ctx })) };
             rtc_status::RTC_OK
         }
         Err(e) => {
@@ -420,7 +444,7 @@ pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: r
     let v = unsafe { (*val).inner.clone() };
     match assoc_in(r, &ks, v) {
         Ok(nv) => {
-            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: nv })) };
+            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: nv, owner_ctx: ctx })) };
             rtc_status::RTC_OK
         }
         Err(e) => {
@@ -438,6 +462,10 @@ pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
     if ctx.is_null() || root.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
+    if !ctx_is_live(ctx) || !val_belongs_to_ctx(ctx, root) {
+        set_error(ctx, rtc_status::RTC_ERR_INVALID_ARG, "context/value ownership mismatch");
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     let cb = match f {
         Some(cb) => cb,
         None => return rtc_status::RTC_ERR_INVALID_ARG,
@@ -445,7 +473,7 @@ pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
     let k = unsafe { match key_from_ffi(&key) { Ok(x) => x, Err(e) => return e } };
     let r = unsafe { &(*root).inner };
     let cur = match get(r, &k) { Ok(v) => v, Err(e) => return e };
-    let cur_ptr = Box::into_raw(Box::new(rtc_val { inner: cur }));
+    let cur_ptr = Box::into_raw(Box::new(rtc_val { inner: cur, owner_ctx: ctx }));
     let mut next_ptr: *mut rtc_val = std::ptr::null_mut();
     let st_or_panic = catch_unwind(AssertUnwindSafe(|| unsafe { cb(ctx, cur_ptr as *const rtc_val, user_data, &mut next_ptr as *mut *mut rtc_val) }));
     let _ = unsafe { Box::from_raw(cur_ptr) };
@@ -463,10 +491,15 @@ pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
         }
         return st;
     }
+    if !val_belongs_to_ctx(ctx, next_ptr) {
+        let _ = unsafe { Box::from_raw(next_ptr) };
+        set_error(ctx, rtc_status::RTC_ERR_INVALID_ARG, "callback returned value from different context");
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     let next = unsafe { (*next_ptr).inner.clone() };
     let _ = unsafe { Box::from_raw(next_ptr) };
     match assoc(r, &k, next) {
-        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v })) }; rtc_status::RTC_OK }
+        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) }; rtc_status::RTC_OK }
         Err(e) => { set_error(ctx, e, "update type conflict"); e }
     }
 }
@@ -475,6 +508,10 @@ pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
 pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
     clear_out(out);
     if ctx.is_null() || root.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    if !ctx_is_live(ctx) || !val_belongs_to_ctx(ctx, root) {
+        set_error(ctx, rtc_status::RTC_ERR_INVALID_ARG, "context/value ownership mismatch");
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     let cb = match f {
@@ -489,7 +526,7 @@ pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: 
     }
     let r = unsafe { &(*root).inner };
     let cur = match get_in(r, &ks) { Ok(v) => v, Err(e) => return e };
-    let cur_ptr = Box::into_raw(Box::new(rtc_val { inner: cur }));
+    let cur_ptr = Box::into_raw(Box::new(rtc_val { inner: cur, owner_ctx: ctx }));
     let mut next_ptr: *mut rtc_val = std::ptr::null_mut();
     let st_or_panic = catch_unwind(AssertUnwindSafe(|| unsafe { cb(ctx, cur_ptr as *const rtc_val, user_data, &mut next_ptr as *mut *mut rtc_val) }));
     let _ = unsafe { Box::from_raw(cur_ptr) };
@@ -507,10 +544,15 @@ pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: 
         }
         return st;
     }
+    if !val_belongs_to_ctx(ctx, next_ptr) {
+        let _ = unsafe { Box::from_raw(next_ptr) };
+        set_error(ctx, rtc_status::RTC_ERR_INVALID_ARG, "callback returned value from different context");
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     let next = unsafe { (*next_ptr).inner.clone() };
     let _ = unsafe { Box::from_raw(next_ptr) };
     match assoc_in(r, &ks, next) {
-        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v })) }; rtc_status::RTC_OK }
+        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) }; rtc_status::RTC_OK }
         Err(e) => { set_error(ctx, e, "update_in type conflict"); e }
     }
 }

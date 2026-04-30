@@ -202,3 +202,61 @@ fn abi_error_paths_leave_out_null() {
     assert_eq!(rtc_val_free(root), rtc_status::RTC_OK);
     assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
 }
+
+
+#[test]
+fn abi_cross_context_inputs_rejected() {
+    unsafe {
+        let mut c1: *mut rtc_ctx = ptr::null_mut();
+        let mut c2: *mut rtc_ctx = ptr::null_mut();
+        assert_eq!(rtc_ctx_new(&mut c1), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_new(&mut c2), rtc_status::RTC_OK);
+
+        let mut root1: *mut rtc_val = ptr::null_mut();
+        let mut val2: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_nil(c1, &mut root1), rtc_status::RTC_OK);
+        assert_eq!(rtc_i64(c2, 9, &mut val2), rtc_status::RTC_OK);
+
+        let (_ks, k) = make_str_key("x");
+        let mut out: *mut rtc_val = ptr::null_mut();
+        let st = rtc_nassoc(c1, root1, k, val2, &mut out);
+        assert_eq!(st, rtc_status::RTC_ERR_INVALID_ARG);
+        assert!(out.is_null());
+
+        assert_eq!(rtc_val_free(val2), rtc_status::RTC_OK);
+        assert_eq!(rtc_val_free(root1), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(c2), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(c1), rtc_status::RTC_OK);
+    }
+}
+
+
+#[test]
+fn abi_double_free_rejected() {
+    let mut ctx: *mut rtc_ctx = ptr::null_mut();
+    assert_eq!(rtc_ctx_new(&mut ctx), rtc_status::RTC_OK);
+    let mut v: *mut rtc_val = ptr::null_mut();
+    assert_eq!(rtc_i64(ctx, 1, &mut v), rtc_status::RTC_OK);
+    assert_eq!(rtc_val_free(v), rtc_status::RTC_OK);
+    assert_eq!(rtc_val_free(v), rtc_status::RTC_ERR_INVALID_ARG);
+    assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
+}
+
+#[test]
+fn abi_use_after_free_root_rejected() {
+    unsafe {
+        let mut ctx: *mut rtc_ctx = ptr::null_mut();
+        assert_eq!(rtc_ctx_new(&mut ctx), rtc_status::RTC_OK);
+
+        let mut root: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_nil(ctx, &mut root), rtc_status::RTC_OK);
+        assert_eq!(rtc_val_free(root), rtc_status::RTC_OK);
+
+        let (_ks, k) = make_str_key("x");
+        let mut out: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_get(ctx, root, k, &mut out), rtc_status::RTC_ERR_INVALID_ARG);
+        assert!(out.is_null());
+
+        assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
+    }
+}

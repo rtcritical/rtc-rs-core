@@ -16,6 +16,7 @@ Operational governance variants and richer domain runbooks should be delivered t
 
 ## Required inputs before operating
 0. `.pm/generated/pm-runtime-brief.yml` (authoritative, deterministic runtime contract)
+0b. Local hook wiring is active: `git config --get core.hooksPath` returns `.githooks` (set with `git config core.hooksPath .githooks`)
 1. `.pm/charter.md`
 2. `.pm/goals.md`
 3. `.pm/scope.md`

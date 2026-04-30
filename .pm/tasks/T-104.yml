@@ -1,0 +1,75 @@
+schema_version: 2
+task_id: T-104
+title: V1 Epic C - Release governance and automation quality
+epic_id: E-104
+goal_ref: P1
+priority: P2
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T14:14:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T14:14:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-101
+scope_in:
+- Strengthen release-note/release-policy automation with explicit operator runbooks.
+- Close governance gaps where local bypasses can evade PM policy intent.
+scope_out:
+- Replatforming CI providers.
+acceptance_criteria:
+- PM governance checks enforced in CI and local hooks are explicitly configured.
+- Release runbook exists with incident handling for known failure modes.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- .github/workflows/ci.yml
+- .pm/procedures/pm-operations.md
+- scripts/prepare_release_notes.py
+risk_tier: low
+required_evidence:
+- python3 .pm/scripts/check_pm_toggles.py .
+- python3 .pm/scripts/check_pm_task_binding.py . --path scripts/prepare_release_notes.py --path .pm/tasks/T-104.yml
+timebox: not_applicable
+rollback_plan: Roll back workflow/procedure edits if guardrails block legitimate emergency fixes.
+notes:
+- Epic container task for governance and release-automation durability improvements.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Make governance and release operations robust, explicit, and auditable.
+  scope:
+    - Codify PM enforcement + release runbook expectations.
+    - Add measurable compliance checks.
+  constraints:
+    - Keep contributor overhead reasonable.
+  assumptions:
+    - CI remains the authoritative merge gate.
+  decision_rationale: Governance regressions are cheaper to prevent than to recover from.
+  alternatives_considered:
+    - Depend on tribal process memory (rejected)
+    - Enforce only in chat/agent policy (rejected)
+  dependencies:
+    - Existing release workflow and PM script suite.
+  acceptance_criteria:
+    - Child tasks complete with evidence of policy and release resilience.
+  validation_plan:
+    - Verify PM and release checks in CI and local dry runs.
+  rollback_risk:
+    - Low; primarily process and validation wiring.
+  open_questions:
+    - Should emergency bypass flow be encoded as explicit task type with auto-expiry?

@@ -1,0 +1,63 @@
+schema_version: 1
+facet:
+  id: github.core
+  version: 1.0.0
+  description: GitHub governance baseline facet for PM-managed projects
+compatibility:
+  pm_schema: ">=2.0.0 <3.0.0"
+dependencies:
+  requires: []
+  conflicts: []
+contributions:
+  files:
+    .pm/specs/rtc-github-governance-spec.md: |
+      # RTC GitHub Governance Spec
+
+      ## Objective
+      Define enforceable GitHub governance expectations for PM-managed repositories.
+
+      ## Scope
+      - Branch protection expectations for default branch.
+      - Tag/release governance expectations.
+      - Required CI context naming expectations.
+      - Separation of facet contracts vs external API mutation tooling.
+
+      ## Out of Scope
+      - Executing GitHub API writes directly.
+      - Managing credentials/tokens in PM files.
+    .pm/policies/rtc-github-governance-policy.md: |
+      # Policy - RTC GitHub Governance
+
+      - PM-enabled repos must enforce protected-default-branch behavior.
+      - Required check contexts must be explicit and stable.
+      - Release workflows must be auditable and reproducible.
+      - External GitHub mutations must run through approved ops tooling.
+    .pm/procedures/rtc-github-governance-runbook.md: |
+      # Procedure - RTC GitHub Governance Runbook
+
+      1. Validate PM baseline and task binding before repository governance changes.
+      2. Verify CI job names align with required check contexts.
+      3. Verify release workflow behavior with a real `v*` tag test in controlled flow.
+      4. If tag ruleset restrictions block release tags, use least-privilege bypass actor policy.
+      5. Use `github-ops` skill for GitHub API mutations; record evidence refs in PM tasks.
+    .pm/templates/rtc-github-project-setup-checklist.md: |
+      # RTC GitHub Project Setup Checklist
+
+      - [ ] default branch protected (PR-only / no direct pushes)
+      - [ ] required check contexts match CI job names
+      - [ ] release workflow validated on real `v*` tag
+      - [ ] tag ruleset bypass policy documented (if applicable)
+      - [ ] PM task evidence includes setup/run outputs
+  checks:
+    - id: rtc-github-spec-present
+      type: file_exists
+      path: .pm/specs/rtc-github-governance-spec.md
+    - id: rtc-github-policy-present
+      type: file_exists
+      path: .pm/policies/rtc-github-governance-policy.md
+    - id: rtc-github-runbook-present
+      type: file_exists
+      path: .pm/procedures/rtc-github-governance-runbook.md
+    - id: rtc-github-checklist-present
+      type: file_exists
+      path: .pm/templates/rtc-github-project-setup-checklist.md

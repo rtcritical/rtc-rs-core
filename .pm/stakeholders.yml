@@ -1,5 +1,9 @@
 stakeholders:
-  - name: REPLACE_NAME
+  - name: Nick
     role: sponsor
     decisions: [scope, priority]
-    contact: REPLACE_CONTACT
+    contact: matrix:@rtc-admin:synapse
+  - name: Clio
+    role: execution-agent
+    decisions: [implementation-plan, validation-evidence]
+    contact: matrix:clio

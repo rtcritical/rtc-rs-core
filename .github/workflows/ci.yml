@@ -18,6 +18,19 @@ jobs:
       - name: Cargo tests
         run: cargo test --tests
 
+  consumer-smoke:
+    name: consumer-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build staticlib
+        run: cargo build --release
+      - name: Build C smoke harness
+        run: gcc -std=c11 -Wall -Wextra -Iinclude harness/consumer_smoke.c target/release/librtc_rs_core.a -lpthread -ldl -lm -o /tmp/consumer_smoke
+      - name: Run C smoke harness
+        run: /tmp/consumer_smoke
+
   policy:
     name: policy
     runs-on: ubuntu-latest

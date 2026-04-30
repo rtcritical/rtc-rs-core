@@ -62,7 +62,7 @@ typedef struct rtc_path {
   uint64_t len;
 } rtc_path;
 
-typedef rtc_status (*rtc_update_fn)(rtc_ctx* ctx, rtc_val current, void* user_data, rtc_val* out_next);
+typedef rtc_status (*rtc_update_fn)(rtc_ctx* ctx, const rtc_val* current, void* user_data, rtc_val** out_next);
 /* Contract: callback must not unwind/panic across C ABI boundary.
  * `out_next` must be set to a value owned by `ctx` when returning RTC_OK.
  */
@@ -76,18 +76,18 @@ rtc_status rtc_last_error_code(rtc_ctx* ctx);
 const char* rtc_last_error_message(rtc_ctx* ctx);
 
 /* constructors */
-rtc_status rtc_nil(rtc_ctx* ctx, rtc_val* out);
-rtc_status rtc_bool(rtc_ctx* ctx, int b, rtc_val* out);
-rtc_status rtc_i64(rtc_ctx* ctx, int64_t n, rtc_val* out);
-rtc_status rtc_f64(rtc_ctx* ctx, double n, rtc_val* out);
-rtc_status rtc_string(rtc_ctx* ctx, const char* s, size_t len, rtc_val* out);
+rtc_status rtc_nil(rtc_ctx* ctx, rtc_val** out);
+rtc_status rtc_bool(rtc_ctx* ctx, int b, rtc_val** out);
+rtc_status rtc_i64(rtc_ctx* ctx, int64_t n, rtc_val** out);
+rtc_status rtc_f64(rtc_ctx* ctx, double n, rtc_val** out);
+rtc_status rtc_string(rtc_ctx* ctx, const char* s, size_t len, rtc_val** out);
 
 /* type/inspect */
-rtc_status rtc_kind_of(rtc_val v, rtc_kind* out_kind);
-rtc_status rtc_as_bool(rtc_val v, int* out);
-rtc_status rtc_as_i64(rtc_val v, int64_t* out);
-rtc_status rtc_as_f64(rtc_val v, double* out);
-rtc_status rtc_as_string(rtc_val v, rtc_str* out);
+rtc_status rtc_kind_of(const rtc_val* v, rtc_kind* out_kind);
+rtc_status rtc_as_bool(const rtc_val* v, int* out);
+rtc_status rtc_as_i64(const rtc_val* v, int64_t* out);
+rtc_status rtc_as_f64(const rtc_val* v, double* out);
+rtc_status rtc_as_string(const rtc_val* v, rtc_str* out);
 
 /* strict core ops
  * Notes:
@@ -96,12 +96,13 @@ rtc_status rtc_as_string(rtc_val v, rtc_str* out);
  *   values passed in and produced must belong to `ctx`.
  * - Implementations clear `out` on entry so callers can treat non-null on error as bug.
  */
-rtc_status rtc_get(rtc_val root, rtc_key key, rtc_val* out);
-rtc_status rtc_get_in(rtc_val root, rtc_path path, rtc_val* out);
-rtc_status rtc_nassoc(rtc_ctx* ctx, rtc_val root, rtc_key key, rtc_val val, rtc_val* out);
-rtc_status rtc_nassoc_in(rtc_ctx* ctx, rtc_val root, rtc_path path, rtc_val val, rtc_val* out);
-rtc_status rtc_nupdate(rtc_ctx* ctx, rtc_val root, rtc_key key, rtc_update_fn fn, void* user_data, rtc_val* out);
-rtc_status rtc_nupdate_in(rtc_ctx* ctx, rtc_val root, rtc_path path, rtc_update_fn fn, void* user_data, rtc_val* out);
+rtc_status rtc_get(rtc_ctx* ctx, const rtc_val* root, rtc_key key, rtc_val** out);
+rtc_status rtc_get_in(rtc_ctx* ctx, const rtc_val* root, rtc_path path, rtc_val** out);
+rtc_status rtc_nassoc(rtc_ctx* ctx, const rtc_val* root, rtc_key key, const rtc_val* val, rtc_val** out);
+rtc_status rtc_nassoc_in(rtc_ctx* ctx, const rtc_val* root, rtc_path path, const rtc_val* val, rtc_val** out);
+rtc_status rtc_nupdate(rtc_ctx* ctx, const rtc_val* root, rtc_key key, rtc_update_fn fn, void* user_data, rtc_val** out);
+rtc_status rtc_nupdate_in(rtc_ctx* ctx, const rtc_val* root, rtc_path path, rtc_update_fn fn, void* user_data, rtc_val** out);
+rtc_status rtc_val_free(rtc_val* v);
 
 
 

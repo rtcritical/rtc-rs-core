@@ -24,7 +24,6 @@ questions:
     task_id: T-106
     resolved_by: nick
     resolved_at_utc: '2026-04-30T22:29:00Z'
-<<<<<<< HEAD
   - id: OQ-2026-04-30-t107-error-contract-surface
     prompt: "Should T-107 codify last-error diagnostic behavior in public header/spec comments without adding new ABI symbols?"
     status: approved
@@ -33,7 +32,6 @@ questions:
     task_id: T-107
     resolved_by: nick
     resolved_at_utc: '2026-04-30T22:36:00Z'
-=======
   - id: OQ-2026-04-30-t108-callback-contract-doc-scope
     prompt: "Should T-108 encode callback lifecycle guarantees in existing ABI header/spec comments rather than introducing a new standalone callback spec document?"
     status: approved
@@ -42,4 +40,3 @@ questions:
     task_id: T-108
     resolved_by: nick
     resolved_at_utc: '2026-04-30T22:40:00Z'
->>>>>>> 385a3dc (test(pm:T-108): harden callback lifecycle and cross-context rejection)

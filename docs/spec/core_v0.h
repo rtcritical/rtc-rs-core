@@ -85,7 +85,7 @@ rtc_status rtc_as_i64(rtc_val v, int64_t* out);
 rtc_status rtc_as_f64(rtc_val v, double* out);
 rtc_status rtc_as_string(rtc_val v, rtc_str* out);
 
-/* strict nucleus ops */
+/* strict core ops */
 rtc_status rtc_get(rtc_val root, rtc_key key, rtc_val* out);
 rtc_status rtc_get_in(rtc_val root, rtc_path path, rtc_val* out);
 rtc_status rtc_nassoc(rtc_ctx* ctx, rtc_val root, rtc_key key, rtc_val val, rtc_val* out);

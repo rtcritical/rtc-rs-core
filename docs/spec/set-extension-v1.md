@@ -1,10 +1,10 @@
 # Set Extension (v1+) — Draft
 
 ## Intent
-Add a high-utility set collection extension in v1+ while preserving JSON-core nucleus boundaries.
+Add a high-utility set collection extension in v1+ while preserving JSON-core core boundaries.
 
 ## Positioning
-- Set is **not** part of v0 JSON-compatible nucleus.
+- Set is **not** part of v0 JSON-compatible core.
 - Set is an **ABI extension type** for non-JSON collection workflows.
 
 ## API Direction (Clojure-aligned)
@@ -16,7 +16,7 @@ Add a high-utility set collection extension in v1+ while preserving JSON-core nu
 - Any JSON crossing with sets requires explicit adapter/transform policy.
 
 ## Compatibility Goal
-Maintain wrapper parity strategy used by nucleus:
+Maintain wrapper parity strategy used by core:
 - strict ABI semantics first
 - ergonomic wrappers map to host-language idioms
 
@@ -29,7 +29,7 @@ Maintain wrapper parity strategy used by nucleus:
 ## Options-Map Extension Pattern (v1+)
 - Future extension APIs may expose `*_with_opts` signatures for behavior tuning.
 - Options values should use the same map/value model for consistency.
-- Candidate early option: `get/get_in` default value override while preserving nucleus baseline semantics.
+- Candidate early option: `get/get_in` default value override while preserving core baseline semantics.
 
 
-Related extension: `docs/spec/user-object-extension-v1.md` (custom opaque objects, non-nucleus).
+Related extension: `docs/spec/user-object-extension-v1.md` (custom opaque objects, non-core).

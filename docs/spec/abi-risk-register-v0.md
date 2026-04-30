@@ -11,8 +11,8 @@ Track top ABI and semantic risks with mitigations and ownership.
 | R4 | Panic/abort crossing FFI boundary | High | Low-Med | Enforce non-throwing boundary, convert failures to status | Core | Open |
 | R5 | Integer conversion/overflow bugs | Medium-High | Medium | Fixed-width boundary types, overflow checks, tests | Core | Open |
 | R6 | Concurrency misuse across thread-confined contexts | Medium | Medium | Explicit threading contract docs + wrapper safeguards | Core/Wrappers | Open |
-| R7 | JSON companion mismatch with nucleus semantics | Medium | Medium | Companion contract + vector-based conformance | Companion | Open |
-| R8 | ABI breakage from nucleus changes | High | Low-Med | Governance policy + freeze + RFC exception path | Governance | Open |
+| R7 | JSON companion mismatch with core semantics | Medium | Medium | Companion contract + vector-based conformance | Companion | Open |
+| R8 | ABI breakage from core changes | High | Low-Med | Governance policy + freeze + RFC exception path | Governance | Open |
 
 ## Review Cadence
 - Revisit at each ADR milestone and before any MINOR release.

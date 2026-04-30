@@ -1,15 +1,15 @@
 # JSON Companion Contract (v0)
 
 ## Purpose
-Define the strict boundary between the core collections nucleus and the JSON companion package.
+Define the strict boundary between the core collections core and the JSON companion package.
 
 ## Scope
-- Core nucleus: transport-agnostic hierarchical value model + operations
+- Core core: transport-agnostic hierarchical value model + operations
 - JSON companion: JSON text/binary serialization behavior and interoperability policy
 
 ## Core vs Companion Responsibility Split
 
-### Core nucleus (MUST)
+### Core core (MUST)
 - Own JSON-compatible value semantics (`nil/bool/number/string/array/object`).
 - Own mutation/query semantics (`get/get_in/assoc/nassoc_in/update/nupdate_in`).
 - Own strict status/error contracts and thread-confined context behavior.
@@ -17,7 +17,7 @@ Define the strict boundary between the core collections nucleus and the JSON com
 
 ### JSON companion (MUST)
 - Provide encode/decode between core values and JSON documents.
-- Preserve nucleus semantics where representable in JSON.
+- Preserve core semantics where representable in JSON.
 - Surface deterministic mapping for non-representable/extension types.
 - Provide stable API contract for caller-controlled serialization behavior.
 
@@ -27,11 +27,11 @@ Define the strict boundary between the core collections nucleus and the JSON com
 - Decoding/encoding layers MUST NOT alter core nil/missing semantics.
 
 2. Numeric policy
-- Core numeric nucleus is `i64` + `f64`.
-- Large/high-precision numeric text beyond nucleus policy MUST follow documented conversion policy (error, string policy, or explicit option).
+- Core numeric core is `i64` + `f64`.
+- Large/high-precision numeric text beyond core policy MUST follow documented conversion policy (error, string policy, or explicit option).
 
 3. Object ordering
-- JSON object ordering is non-semantic in nucleus and companion by default.
+- JSON object ordering is non-semantic in core and companion by default.
 - Companion MUST NOT promise deterministic object key order unless explicit option is enabled.
 
 4. YAML posture
@@ -41,7 +41,7 @@ Define the strict boundary between the core collections nucleus and the JSON com
 ## Extension Type Policy (v1+ hooks)
 
 ### Set mapping
-- Set is not part of v0 nucleus JSON model.
+- Set is not part of v0 core JSON model.
 - When v1 set extension is enabled, companion SHOULD support set->JSON-array encoding.
 - Array->set decode requires explicit opt-in (schema/type hint/options).
 - Set ordering in JSON output is non-deterministic by default.
@@ -50,7 +50,7 @@ Define the strict boundary between the core collections nucleus and the JSON com
 
 - Canonical C ABI remains strict/status-based.
 - Companion APIs may be ergonomic in host language wrappers but MUST preserve strict semantic parity.
-- Companion MUST not bypass ownership/error/threading constraints defined by nucleus contract.
+- Companion MUST not bypass ownership/error/threading constraints defined by core contract.
 
 ## Minimal v0 Companion API Surface (Draft)
 

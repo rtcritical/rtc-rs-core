@@ -114,9 +114,9 @@ Rationale:
 
 ## Locked Decisions (Current)
 
-1. **Core nucleus is frozen**
+1. **Core core is frozen**
    - Includes: value model/types, ownership+error model, core nested ops, path/key semantics, and thread-safety contract.
-   - Additive helper/extension APIs are allowed outside the nucleus.
+   - Additive helper/extension APIs are allowed outside the core.
 
 2. **JSON companion strategy**
    - Keep companion JSON API in the same repo as a separate package.
@@ -129,7 +129,7 @@ Rationale:
    - Adoption decision is evidence-gated.
 
 4. **Boundary placement**
-   - Binary IPC/shared-memory format is an adjacent extension track, not part of frozen core nucleus.
+   - Binary IPC/shared-memory format is an adjacent extension track, not part of frozen core core.
 
 5. **Public C ABI surface style**
    - Public C ABI SHALL expose strict, explicit status/result contracts as the canonical interface.
@@ -139,19 +139,19 @@ Rationale:
 6. **Clojure-compatible missing-target update semantics**
    - `update`/`update_in` missing-target behavior SHALL apply updater to `nil` (Clojure-compatible) rather than hard failure by default.
 
-7. **Error message API policy (v0 nucleus)**
-   - v0 nucleus SHALL expose `rtc_last_error_message(ctx)` as the human-readable error companion to strict status codes.
-   - Explicit buffer-copy error message APIs are deferred and SHALL remain out of nucleus unless a concrete integration need is proven.
+7. **Error message API policy (v0 core)**
+   - v0 core SHALL expose `rtc_last_error_message(ctx)` as the human-readable error companion to strict status codes.
+   - Explicit buffer-copy error message APIs are deferred and SHALL remain out of core unless a concrete integration need is proven.
 
 ---
 
 ## Core Nucleus Specification (Draft, Normative)
 
-The following nucleus contract is normative and MUST remain stable once ratified.
+The following core contract is normative and MUST remain stable once ratified.
 
 1. **Value model (JSON-compatible core)**
    - Core value kinds MUST be limited to: `nil`, `bool`, `number`, `string`, `array`, `object`.
-   - Numeric representation in nucleus MUST be `i64` and `f64`.
+   - Numeric representation in core MUST be `i64` and `f64`.
    - Very large or high-precision numeric payloads SHOULD be represented as strings by policy at integration boundaries.
 
 1a. **ABI boundary integer-width policy**
@@ -174,23 +174,23 @@ The following nucleus contract is normative and MUST remain stable once ratified
    - Errors MUST be represented via stable status/result contracts (with optional message retrieval).
    - No panic/abort behavior SHALL cross ABI boundaries.
 
-5. **Threading contract (nucleus)**
+5. **Threading contract (core)**
    - Nucleus operations MUST be single-threaded by design.
    - Contexts MUST be thread-confined unless explicitly transferred by caller-managed synchronization/ownership handoff.
-   - Internal parallelism SHALL be out-of-scope for nucleus.
+   - Internal parallelism SHALL be out-of-scope for core.
 
 6. **Object/map ordering semantics**
-   - Object/map ordering MUST be unspecified in nucleus semantics.
+   - Object/map ordering MUST be unspecified in core semantics.
    - Optional insertion-order-preserving behavior, if ever added, SHALL be extension-level and non-core.
 
 7. **JSON-companion relationship**
-   - JSON encode/decode SHALL NOT be required inside core nucleus implementation.
+   - JSON encode/decode SHALL NOT be required inside core core implementation.
    - A companion JSON package MUST be co-designed in the same repo with aligned constraints and contracts.
    - Core MUST remain transport-agnostic; companion JSON layer SHALL provide serialization boundary behavior.
 
 8. **YAML compatibility posture**
    - JSON-compatible YAML usage SHALL be supported only under JSON-compatibility-first constraints.
-   - YAML-specific semantics beyond the JSON-compatible subset SHALL be out-of-scope for nucleus.
+   - YAML-specific semantics beyond the JSON-compatible subset SHALL be out-of-scope for core.
 
 ---
 
@@ -279,7 +279,7 @@ Net: Rust + disciplined C ABI is often the best balance for our goals.
 
 - Consider optional `*_with_opts` API variants across core operation families in v1+ extensions.
 - Options payload SHOULD use the same map/value model exposed by the library to preserve internal consistency.
-- Initial candidate option: default-value behavior for `get/get_in` variants, while keeping nucleus defaults unchanged.
+- Initial candidate option: default-value behavior for `get/get_in` variants, while keeping core defaults unchanged.
 
 ### Scope posture
 
@@ -290,7 +290,7 @@ Net: Rust + disciplined C ABI is often the best balance for our goals.
 
 ## Strict ABI Function Behavior Matrix (Draft)
 
-Status basis uses the locked v0 nucleus status set:
+Status basis uses the locked v0 core status set:
 `RTC_OK`, `RTC_ERR_INVALID_ARG`, `RTC_ERR_TYPE`, `RTC_ERR_BOUNDS`, `RTC_ERR_OOM`, `RTC_ERR_OVERFLOW`, `RTC_ERR_STATE`, `RTC_ERR_INTERNAL`.
 
 ### `get_ex(root, key, out)`
@@ -330,7 +330,7 @@ Status basis uses the locked v0 nucleus status set:
 - Unexpected invariant failure: `RTC_ERR_INTERNAL`.
 
 ### Deliberate omission
-- `NOT_FOUND` is intentionally omitted from nucleus strict semantics for read traversal; missing keys/paths are modeled as `nil + RTC_OK`.
+- `NOT_FOUND` is intentionally omitted from core strict semantics for read traversal; missing keys/paths are modeled as `nil + RTC_OK`.
 
 ---
 
@@ -370,7 +370,7 @@ Revisit this decision only if one or more are observed with evidence:
 
 ## Addendum: User Object Extension Without Nucleus Changes
 
-We explicitly support a non-nucleus extension path for custom user/application objects.
+We explicitly support a non-core extension path for custom user/application objects.
 
 - Nucleus remains frozen and JSON-compatible.
 - User objects are introduced only as an additive extension value kind.
@@ -451,7 +451,7 @@ Reweighted criteria (total 100):
 - API safety + misuse resistance: 20
 - ABI stability/compatibility: 18
 - Semantic clarity/consistency: 12
-- Evolvability behind frozen nucleus: 12
+- Evolvability behind frozen core: 12
 - Time-to-v0 delivery: 13
 - Performance headroom (future): 8
 - Strategic Ecosystem Leverage (Internal Platform Fit): 17
@@ -464,7 +464,7 @@ Directional outcome (v2): Rust-core + strict C ABI remains preferred, with stron
 
 ### Positive
 - Stronger safety posture for foundational systems code while preserving broad ABI portability.
-- Clear nucleus freeze + governance path reduces long-term ecosystem drift.
+- Clear core freeze + governance path reduces long-term ecosystem drift.
 - Wrapper parity approach supports ergonomic APIs without sacrificing canonical behavior.
 
 ### Costs/Tradeoffs
@@ -485,7 +485,7 @@ Directional outcome (v2): Rust-core + strict C ABI remains preferred, with stron
 - **Fallback plan:** Continue with JSON companion path while keeping binary IPC track active
 
 - **Item:** Set extension implementation (`set` ABI type + ops)
-- **Reason deferred:** v1+ scope to preserve v0 nucleus focus
+- **Reason deferred:** v1+ scope to preserve v0 core focus
 - **Owner:** Nick + Clio
 - **Target date:** 2026-06-30
 - **Risk if delayed:** Delayed non-JSON collection utility expansion

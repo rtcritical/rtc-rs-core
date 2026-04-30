@@ -1,13 +1,13 @@
 # Governance and Versioning Policy (v0)
 
 ## Purpose
-Define how the frozen nucleus can evolve safely without breaking downstream ecosystems.
+Define how the frozen core can evolve safely without breaking downstream ecosystems.
 
 ## Policy Summary
 
-- The nucleus contract is frozen once ratified.
+- The core contract is frozen once ratified.
 - Public C ABI is canonical and stability-critical.
-- Change to frozen nucleus requires explicit governance process.
+- Change to frozen core requires explicit governance process.
 
 ## Versioning Model
 
@@ -17,7 +17,7 @@ Define how the frozen nucleus can evolve safely without breaking downstream ecos
 - `PATCH`: bugfixes/no contract breaks
 
 ### Nucleus freeze override
-For frozen nucleus items, breaking changes are extraordinary and require exception governance (not routine major bump behavior).
+For frozen core items, breaking changes are extraordinary and require exception governance (not routine major bump behavior).
 
 ## Change Classes
 
@@ -26,7 +26,7 @@ For frozen nucleus items, breaking changes are extraordinary and require excepti
 - Requires formal exception RFC and explicit approval.
 
 2. **Nucleus-additive (normal path)**
-- Additive APIs/extensions outside frozen nucleus.
+- Additive APIs/extensions outside frozen core.
 - Must not alter existing semantic contracts.
 
 3. **Wrapper-only changes**
@@ -42,7 +42,7 @@ For frozen nucleus items, breaking changes are extraordinary and require excepti
    - rollback plan
 
 2. Classification
-   - nucleus-breaking vs additive vs wrapper-only
+   - core-breaking vs additive vs wrapper-only
 
 3. Required evidence
    - parity tests
@@ -56,7 +56,7 @@ For frozen nucleus items, breaking changes are extraordinary and require excepti
 
 ## Exception Path (Frozen Nucleus)
 
-A nucleus-breaking exception MUST include:
+A core-breaking exception MUST include:
 - demonstrated critical defect or unavoidable platform/security requirement
 - compatibility mitigation plan
 - migration tooling/docs strategy

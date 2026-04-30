@@ -89,7 +89,7 @@ rtc_status rtc_as_i64(rtc_val v, int64_t* out);
 rtc_status rtc_as_f64(rtc_val v, double* out);
 rtc_status rtc_as_string(rtc_val v, rtc_str* out);
 
-/* strict nucleus ops
+/* strict core ops
  * Notes:
  * - `rtc_get*` read operations return RTC_NIL for missing keys/paths.
  * - Mutating `rtc_n*` operations require context ownership consistency:

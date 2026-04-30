@@ -23,13 +23,13 @@ ADR can be marked **Accepted** only when all required gates below are satisfied 
 
 ## A. Core Contract Freeze (Required)
 
-- [x] Core nucleus scope is frozen and documented (types, ops, semantics).
+- [x] Core core scope is frozen and documented (types, ops, semantics).
 - [x] Strict C ABI style decision is frozen.
 - [x] Status-code taxonomy is frozen.
 - [x] Function behavior matrix is frozen.
 - [x] Integer boundary policy is frozen (`int64_t` values/index, `uint64_t` lengths/counts).
 - [x] Threading contract is frozen (thread-confined contexts).
-- [x] Map ordering semantics are frozen (unspecified in nucleus).
+- [x] Map ordering semantics are frozen (unspecified in core).
 
 Artifacts:
 - `docs/adr-c-vs-rust-working.md`
@@ -86,7 +86,7 @@ Artifacts:
 
 ## F. Binary IPC Extension Track (Conditionally Required)
 
-Required before marking extension “Adopted”; not required to finalize nucleus ADR if explicitly deferred.
+Required before marking extension “Adopted”; not required to finalize core ADR if explicitly deferred.
 
 - [ ] Binary format/spec draft exists.
 - [ ] Reference prototype exists.
@@ -101,7 +101,7 @@ Artifacts:
 ## G. Governance + Versioning (Required)
 
 - [x] ABI versioning policy finalized.
-- [x] Change-control process for frozen nucleus defined (RFC/exception path).
+- [x] Change-control process for frozen core defined (RFC/exception path).
 - [x] Backward-compat policy documented for wrappers.
 
 Artifacts:

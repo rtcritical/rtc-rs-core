@@ -1,0 +1,80 @@
+schema_version: 2
+task_id: T-111
+title: V1.C3 - GitHub facet configurability model (defaults + project overrides)
+epic_id: E-104
+goal_ref: P1
+priority: P2
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T23:31:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T23:31:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-110
+scope_in:
+- Define configurable GitHub governance behavior model with explicit defaults.
+- Define project-level override mechanism and precedence order.
+- Document safe/unsafe override classes and required approval paths.
+- Propose facet/runtime-brief integration approach for deterministic reads.
+scope_out:
+- Implementing all override plumbing in scripts/checkers.
+- Applying org-wide rollout across all repos.
+acceptance_criteria:
+- Spec/policy docs define default behavior, override schema, and precedence.
+- At least one worked example shows project override from default.
+- Approval boundaries for risky overrides are explicit.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- .pm/facets/github.core/facet.yml
+- .pm/facets/github.release-ops/facet.yml
+- .pm/generated/pm-runtime-brief.yml
+- .pm/policies/rtc-github-governance-policy.md
+risk_tier: medium
+required_evidence:
+- override model spec draft
+- precedence matrix
+- example override configuration
+timebox: not_applicable
+rollback_plan: Revert draft docs if model introduces unsafe ambiguity; keep current static governance behavior.
+notes:
+- Requested by Nick after epic-branch CI flow policy adoption.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/rtc-github-governance-runbook.md
+execution_readiness:
+  objective: Enable controlled per-project GitHub governance customization without losing baseline safety.
+  scope:
+  - Defaults and override precedence.
+  - Safety boundaries and approval model.
+  constraints:
+  - Preserve deterministic runtime behavior.
+  assumptions:
+  - GitHub facets remain active via runtime brief.
+  decision_rationale: Need flexibility across projects while retaining consistent CI/merge governance.
+  alternatives_considered:
+  - Keep static one-size-fits-all GitHub behavior (rejected)
+  dependencies:
+  - T-110
+  acceptance_criteria:
+  - Override model is explicit, testable, and auditable.
+  validation_plan:
+  - PM validation + checklist walk-through against one concrete project scenario.
+  rollback_risk:
+  - medium
+  open_questions:
+  - Should overrides live in repo-local facet config patch files or a dedicated project governance config file?

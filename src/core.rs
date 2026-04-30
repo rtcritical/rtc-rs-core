@@ -204,6 +204,40 @@ fn live_ctxs() -> &'static Mutex<HashSet<usize>> {
     LIVE.get_or_init(|| Mutex::new(HashSet::new()))
 }
 
+fn live_vals() -> &'static Mutex<HashSet<usize>> {
+    static LIVE: OnceLock<Mutex<HashSet<usize>>> = OnceLock::new();
+    LIVE.get_or_init(|| Mutex::new(HashSet::new()))
+}
+
+fn freed_vals() -> &'static Mutex<HashSet<usize>> {
+    static FREED: OnceLock<Mutex<HashSet<usize>>> = OnceLock::new();
+    FREED.get_or_init(|| Mutex::new(HashSet::new()))
+}
+
+fn mark_val_alloc(v: *mut rtc_val) {
+    if v.is_null() { return; }
+    let addr = v as usize;
+    let _ = freed_vals().lock().map(|mut m| { m.remove(&addr); });
+    let _ = live_vals().lock().map(|mut m| { m.insert(addr); });
+}
+
+fn mark_val_freed(v: *mut rtc_val) {
+    if v.is_null() { return; }
+    let addr = v as usize;
+    let _ = live_vals().lock().map(|mut m| { m.remove(&addr); });
+    let _ = freed_vals().lock().map(|mut m| { m.insert(addr); });
+}
+
+fn val_is_live_ptr(v: *const rtc_val) -> bool {
+    if v.is_null() { return false; }
+    live_vals().lock().map(|m| m.contains(&(v as usize))).unwrap_or(false)
+}
+
+fn val_was_freed_ptr(v: *const rtc_val) -> bool {
+    if v.is_null() { return false; }
+    freed_vals().lock().map(|m| m.contains(&(v as usize))).unwrap_or(false)
+}
+
 fn ctx_is_live(ctx: *mut rtc_ctx) -> bool {
     if ctx.is_null() { return false; }
     live_ctxs().lock().map(|m| m.contains(&(ctx as usize))).unwrap_or(false)
@@ -301,6 +335,7 @@ pub extern "C" fn rtc_nil(ctx: *mut rtc_ctx, out: *mut *mut rtc_val) -> rtc_stat
     }
     let v = Box::new(rtc_val { inner: Value::Nil, owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
+    mark_val_alloc(unsafe { *out });
     rtc_status::RTC_OK
 }
 
@@ -312,6 +347,7 @@ pub extern "C" fn rtc_bool(ctx: *mut rtc_ctx, b: c_int, out: *mut *mut rtc_val) 
     }
     let v = Box::new(rtc_val { inner: Value::Bool(b != 0), owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
+    mark_val_alloc(unsafe { *out });
     rtc_status::RTC_OK
 }
 
@@ -323,6 +359,7 @@ pub extern "C" fn rtc_i64(ctx: *mut rtc_ctx, n: i64, out: *mut *mut rtc_val) -> 
     }
     let v = Box::new(rtc_val { inner: Value::I64(n), owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
+    mark_val_alloc(unsafe { *out });
     rtc_status::RTC_OK
 }
 
@@ -334,6 +371,7 @@ pub extern "C" fn rtc_f64(ctx: *mut rtc_ctx, n: f64, out: *mut *mut rtc_val) -> 
     }
     let v = Box::new(rtc_val { inner: Value::F64(n), owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
+    mark_val_alloc(unsafe { *out });
     rtc_status::RTC_OK
 }
 
@@ -347,11 +385,15 @@ pub extern "C" fn rtc_string(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out:
     let st = String::from_utf8_lossy(bytes).to_string();
     let v = Box::new(rtc_val { inner: Value::Str(st), owner_ctx: ctx });
     unsafe { *out = Box::into_raw(v) };
+    mark_val_alloc(unsafe { *out });
     rtc_status::RTC_OK
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, out: *mut *mut rtc_val) -> rtc_status {
+    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     clear_out(out);
     if root.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
@@ -361,6 +403,7 @@ pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key
     match get(r, &k) {
         Ok(v) => {
             unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) };
+            mark_val_alloc(unsafe { *out });
             rtc_status::RTC_OK
         }
         Err(e) => e,
@@ -369,6 +412,9 @@ pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, out: *mut *mut rtc_val) -> rtc_status {
+    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     clear_out(out);
     if root.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
@@ -389,6 +435,7 @@ pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_
     match get_in(r, &ks) {
         Ok(v) => {
             unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) };
+            mark_val_alloc(unsafe { *out });
             rtc_status::RTC_OK
         }
         Err(e) => {
@@ -402,11 +449,14 @@ pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
+    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     clear_out(out);
     if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
-    if !ctx_is_live(ctx) || !val_belongs_to_ctx(ctx, root) || !val_belongs_to_ctx(ctx, val) {
+    if val_was_freed_ptr(val) || !val_is_live_ptr(val) || !ctx_is_live(ctx) || !val_belongs_to_ctx(ctx, root) || !val_belongs_to_ctx(ctx, val) {
         set_error(ctx, rtc_status::RTC_ERR_INVALID_ARG, "context/value ownership mismatch");
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -416,6 +466,7 @@ pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_k
     match assoc(r, &k, v) {
         Ok(nv) => {
             unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: nv, owner_ctx: ctx })) };
+            mark_val_alloc(unsafe { *out });
             rtc_status::RTC_OK
         }
         Err(e) => {
@@ -427,8 +478,14 @@ pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_k
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
+    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     clear_out(out);
     if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    if val_was_freed_ptr(val) || !val_is_live_ptr(val) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     let mut ks: Vec<Key> = Vec::with_capacity(path.len as usize);
@@ -445,6 +502,7 @@ pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: r
     match assoc_in(r, &ks, v) {
         Ok(nv) => {
             unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: nv, owner_ctx: ctx })) };
+            mark_val_alloc(unsafe { *out });
             rtc_status::RTC_OK
         }
         Err(e) => {
@@ -458,6 +516,9 @@ pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: r
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
+    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     clear_out(out);
     if ctx.is_null() || root.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
@@ -506,6 +567,9 @@ pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
+    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
     clear_out(out);
     if ctx.is_null() || root.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
@@ -562,6 +626,10 @@ pub extern "C" fn rtc_val_free(v: *mut rtc_val) -> rtc_status {
     if v.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
+    if val_was_freed_ptr(v) || !val_is_live_ptr(v) {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    mark_val_freed(v);
     unsafe { drop(Box::from_raw(v)) };
     rtc_status::RTC_OK
 }

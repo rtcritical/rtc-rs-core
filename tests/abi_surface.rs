@@ -2,6 +2,14 @@ use rtc_rs_core::core::*;
 use std::ffi::CString;
 use std::ptr;
 
+unsafe fn last_error_message(ctx: *mut rtc_ctx) -> String {
+    let p = rtc_last_error_message(ctx);
+    if p.is_null() {
+        return String::new();
+    }
+    std::ffi::CStr::from_ptr(p).to_string_lossy().to_string()
+}
+
 unsafe fn make_str_key(s: &str) -> (CString, rtc_key) {
     let cs = CString::new(s).unwrap();
     let k = rtc_key {
@@ -289,5 +297,51 @@ fn abi_update_callback_returning_foreign_ctx_val_rejected() {
         assert_eq!(rtc_val_free(root), rtc_status::RTC_OK);
         assert_eq!(rtc_ctx_free(c2), rtc_status::RTC_OK);
         assert_eq!(rtc_ctx_free(c1), rtc_status::RTC_OK);
+    }
+}
+
+#[test]
+fn abi_error_contract_sets_last_error_on_path_key_decode_failure() {
+    unsafe {
+        let mut ctx: *mut rtc_ctx = ptr::null_mut();
+        assert_eq!(rtc_ctx_new(&mut ctx), rtc_status::RTC_OK);
+
+        let mut root: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_nil(ctx, &mut root), rtc_status::RTC_OK);
+
+        let bad_key = rtc_key {
+            kind: rtc_key_kind::RTC_KEY_STR,
+            as_: rtc_key_as { str_: rtc_str { ptr: ptr::null(), len: 1 } },
+        };
+        let path_elems = vec![bad_key];
+        let path = rtc_path { elems: path_elems.as_ptr(), len: 1 };
+
+        let mut out: *mut rtc_val = ptr::null_mut();
+        let st = rtc_get_in(ctx, root, path, &mut out);
+        assert_eq!(st, rtc_status::RTC_ERR_INVALID_ARG);
+        assert_eq!(rtc_last_error_code(ctx), rtc_status::RTC_ERR_INVALID_ARG);
+        assert!(last_error_message(ctx).contains("invalid path key"));
+
+        assert_eq!(rtc_val_free(root), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
+    }
+}
+
+#[test]
+fn abi_error_contract_preserves_callback_error_without_overwrite() {
+    unsafe {
+        let mut ctx: *mut rtc_ctx = ptr::null_mut();
+        assert_eq!(rtc_ctx_new(&mut ctx), rtc_status::RTC_OK);
+        let mut root: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_nil(ctx, &mut root), rtc_status::RTC_OK);
+
+        let (_ks, k) = make_str_key("x");
+        let mut out: *mut rtc_val = ptr::null_mut();
+        let st = rtc_nupdate(ctx, root, k, Some(cb_return_type_err), ptr::null_mut(), &mut out);
+        assert_eq!(st, rtc_status::RTC_ERR_TYPE);
+        assert_eq!(rtc_last_error_code(ctx), rtc_status::RTC_OK);
+
+        assert_eq!(rtc_val_free(root), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
     }
 }

@@ -4,7 +4,7 @@ title: V1.B1 - Formalize error contract expectations and edge-case tests
 epic_id: E-103
 goal_ref: P1
 priority: P1
-status: todo
+status: done
 owner:
   type: human
   id: nick
@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T20:43:00Z'
+updated_at: '2026-04-30T22:36:00Z'
 updated_by:
   type: agent
   id: clio
@@ -36,6 +36,8 @@ decision_refs:
 - .pm/decisions/open-questions.yml
 evidence_refs:
 - tests/abi_surface.rs
+- include/core_v0.h
+- docs/spec/core_v0.h
 - scripts/check_abi_parity.py
 risk_tier: medium
 required_evidence:
@@ -45,6 +47,7 @@ timebox: not_applicable
 rollback_plan: Revert hardening deltas that change expected consumer-visible behavior unintentionally.
 notes:
 - Focus on deterministic negative-path coverage.
+- Added explicit last-error contract language and deterministic tests for path-key decode and callback error propagation behavior.
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md
@@ -71,4 +74,16 @@ execution_readiness:
   rollback_risk:
   - medium
   open_questions:
-  - Do we need a machine-readable error contract table in docs/spec?
+  - Deferred: machine-readable error contract table can be added in a follow-up if consumers request it.
+closed_at: '2026-04-30T22:36:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+close_reason: completed
+completion_evidence:
+- tests/abi_surface.rs
+- include/core_v0.h
+- docs/spec/core_v0.h
+- cargo test --tests
+- ./scripts/check_abi_parity.py

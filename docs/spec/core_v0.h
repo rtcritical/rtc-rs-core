@@ -67,7 +67,14 @@ typedef rtc_status (*rtc_update_fn)(rtc_ctx* ctx, rtc_val current, void* user_da
 rtc_status rtc_ctx_new(rtc_ctx** out_ctx);
 rtc_status rtc_ctx_free(rtc_ctx* ctx);
 
-/* error retrieval */
+/* error retrieval
+ * Contract:
+ * - `rtc_last_error_code` / `rtc_last_error_message` are context-scoped diagnostics.
+ * - On entry, functions do not implicitly clear last-error state.
+ * - Functions that return explicit callback/user error statuses may leave last-error unchanged.
+ * - Functions that detect internal argument/state/type conflicts SHOULD set last-error with
+ *   a stable message suitable for debugging and test assertions.
+ */
 rtc_status rtc_last_error_code(rtc_ctx* ctx);
 const char* rtc_last_error_message(rtc_ctx* ctx);
 

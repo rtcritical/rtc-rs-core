@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T14:14:00Z'
+updated_at: '2026-04-30T19:40:00Z'
 updated_by:
   type: agent
   id: clio
@@ -37,6 +37,10 @@ evidence_refs:
 - .github/workflows/ci.yml
 - .pm/procedures/pm-operations.md
 - scripts/prepare_release_notes.py
+- scripts/check_abi_compat_policy.py
+- docs/abi-compat-policy.md
+- docs/post-v0-roadmap.md
+- docs/spec/abi-v0-symbol-baseline.txt
 risk_tier: low
 required_evidence:
 - python3 .pm/scripts/check_pm_toggles.py .
@@ -45,6 +49,7 @@ timebox: not_applicable
 rollback_plan: Roll back workflow/procedure edits if guardrails block legitimate emergency fixes.
 notes:
 - Epic container task for governance and release-automation durability improvements.
+- Includes ABI compatibility policy guard and post-v0 roadmap/spec baselines in this slice.
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md

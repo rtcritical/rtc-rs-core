@@ -1,4 +1,4 @@
-name: parity-harness
+name: ci
 
 on:
   push:

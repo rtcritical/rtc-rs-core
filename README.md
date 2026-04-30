@@ -72,6 +72,12 @@ LD_LIBRARY_PATH=target/release /tmp/consumer_smoke_callback
 ./scripts/run_perf_baseline.sh [text|csv|json]
 ```
 
+## Release notes prep
+
+```bash
+./scripts/prepare_release_notes.py
+cat dist/release_notes.md
+```
 
 ## License
 

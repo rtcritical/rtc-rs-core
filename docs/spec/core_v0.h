@@ -61,6 +61,7 @@ typedef struct rtc_path {
 } rtc_path;
 
 typedef rtc_status (*rtc_update_fn)(rtc_ctx* ctx, rtc_val current, void* user_data, rtc_val* out_next);
+/* Contract: callback must not unwind/panic across C ABI boundary. */
 
 /* context lifecycle */
 rtc_status rtc_ctx_new(rtc_ctx** out_ctx);

@@ -3,6 +3,7 @@
 #![allow(non_camel_case_types)]
 
 use std::ffi::{c_char, c_int};
+use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::ptr;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -446,8 +447,15 @@ pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
     let cur = match get(r, &k) { Ok(v) => v, Err(e) => return e };
     let cur_ptr = Box::into_raw(Box::new(rtc_val { inner: cur }));
     let mut next_ptr: *mut rtc_val = std::ptr::null_mut();
-    let st = unsafe { cb(ctx, cur_ptr as *const rtc_val, user_data, &mut next_ptr as *mut *mut rtc_val) };
+    let st_or_panic = catch_unwind(AssertUnwindSafe(|| unsafe { cb(ctx, cur_ptr as *const rtc_val, user_data, &mut next_ptr as *mut *mut rtc_val) }));
     let _ = unsafe { Box::from_raw(cur_ptr) };
+    let st = match st_or_panic {
+        Ok(st) => st,
+        Err(_) => {
+            set_error(ctx, rtc_status::RTC_ERR_INTERNAL, "updater callback panicked");
+            return rtc_status::RTC_ERR_INTERNAL;
+        }
+    };
     if st != rtc_status::RTC_OK || next_ptr.is_null() {
         if st == rtc_status::RTC_OK {
             set_error(ctx, rtc_status::RTC_ERR_STATE, "updater returned null next value");
@@ -483,8 +491,15 @@ pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: 
     let cur = match get_in(r, &ks) { Ok(v) => v, Err(e) => return e };
     let cur_ptr = Box::into_raw(Box::new(rtc_val { inner: cur }));
     let mut next_ptr: *mut rtc_val = std::ptr::null_mut();
-    let st = unsafe { cb(ctx, cur_ptr as *const rtc_val, user_data, &mut next_ptr as *mut *mut rtc_val) };
+    let st_or_panic = catch_unwind(AssertUnwindSafe(|| unsafe { cb(ctx, cur_ptr as *const rtc_val, user_data, &mut next_ptr as *mut *mut rtc_val) }));
     let _ = unsafe { Box::from_raw(cur_ptr) };
+    let st = match st_or_panic {
+        Ok(st) => st,
+        Err(_) => {
+            set_error(ctx, rtc_status::RTC_ERR_INTERNAL, "updater callback panicked");
+            return rtc_status::RTC_ERR_INTERNAL;
+        }
+    };
     if st != rtc_status::RTC_OK || next_ptr.is_null() {
         if st == rtc_status::RTC_OK {
             set_error(ctx, rtc_status::RTC_ERR_STATE, "updater returned null next value");

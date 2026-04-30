@@ -62,3 +62,8 @@ cargo test --tests
 ## License
 
 MIT. See `LICENSE`.
+
+
+## Callback contract
+
+Updater callbacks used via the C ABI must not unwind/panic across the FFI boundary. Return an error status instead.

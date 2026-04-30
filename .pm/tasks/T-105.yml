@@ -1,0 +1,75 @@
+schema_version: 2
+task_id: T-105
+title: V1.A1 - Define packaging matrix and consumer contract
+epic_id: E-102
+goal_ref: P1
+priority: P1
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T20:42:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T20:42:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-102
+scope_in:
+- Freeze v1 packaging artifact matrix and support tier (required vs best-effort).
+- Define consumer-facing contract for each artifact and verification expectation.
+- Record no-go criteria for cutting a release without complete artifacts.
+scope_out:
+- Implementing new build/release steps.
+- Introducing new ABI symbols.
+acceptance_criteria:
+- Packaging matrix documented with explicit required/best-effort split.
+- Verification contract documented and linkable from release process docs.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- docs/post-v0-roadmap.md
+- docs/v0-closeout.md
+risk_tier: medium
+required_evidence:
+- markdown update describing matrix and contract
+- reviewer sign-off in task notes
+timebox: not_applicable
+rollback_plan: Revert planning/docs deltas if matrix assumptions are invalidated.
+notes:
+- Planning-only slice; no implementation execution in this task.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Remove ambiguity before implementation work starts.
+  scope:
+  - Define artifact commitments.
+  - Define acceptance gate for releases.
+  constraints:
+  - Keep contributor burden reasonable.
+  assumptions:
+  - Existing source/header/static flow remains baseline.
+  decision_rationale: Clear contract first prevents churn in downstream CI/release slices.
+  alternatives_considered:
+  - Implement first and document later (rejected)
+  dependencies:
+  - T-102
+  acceptance_criteria:
+  - Matrix and contract approved.
+  validation_plan:
+  - PM validation and cross-link checks.
+  rollback_risk:
+  - low
+  open_questions:
+  - Should shared-library artifacts be required in v1 or best-effort?

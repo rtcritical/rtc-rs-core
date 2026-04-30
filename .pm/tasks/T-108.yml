@@ -1,0 +1,74 @@
+schema_version: 2
+task_id: T-108
+title: V1.B2 - Harden callback lifecycle guarantees and cross-context rejection paths
+epic_id: E-103
+goal_ref: P1
+priority: P1
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T20:43:30Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T20:43:30Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-107
+scope_in:
+- Expand callback lifecycle tests for registration/update/clear semantics.
+- Validate cross-context return rejection and ownership safety paths.
+- Keep shared-lib consumer smoke callback path green.
+scope_out:
+- Panic-path testing that aborts process by design.
+acceptance_criteria:
+- Callback lifecycle contract has explicit tests and documentation references.
+- consumer_smoke_callback remains green.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- tests/abi_surface.rs
+- harness/consumer_smoke_callback.c
+risk_tier: medium
+required_evidence:
+- cargo test --tests
+- harness callback smoke pass
+timebox: not_applicable
+rollback_plan: Revert lifecycle hardening changes that introduce callback regressions.
+notes:
+- Supersedes earlier panic-unwind test approach that caused SIGABRT.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Prevent callback-related correctness regressions.
+  scope:
+  - Lifecycle tests.
+  - Consumer callback smoke confidence.
+  constraints:
+  - No ABI breaks.
+  assumptions:
+  - Callback API shape remains stable.
+  decision_rationale: Callback semantics are a high-risk integration boundary.
+  alternatives_considered:
+  - Minimal additional tests (rejected)
+  dependencies:
+  - T-107
+  acceptance_criteria:
+  - Callback contract confidence improved with green evidence.
+  validation_plan:
+  - Tests + consumer_smoke_callback + parity.
+  rollback_risk:
+  - medium
+  open_questions:
+  - Should callback contract get a dedicated policy/spec doc?

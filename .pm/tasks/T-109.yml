@@ -1,0 +1,74 @@
+schema_version: 2
+task_id: T-109
+title: V1.C1 - Release governance runbook and incident handling hardening
+epic_id: E-104
+goal_ref: P1
+priority: P2
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T20:44:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T20:44:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-104
+scope_in:
+- Document release operator runbook with known failure modes and deterministic recovery.
+- Include tag-ruleset/bypass nuances and release-note generation failure triage.
+- Define explicit go/no-go checks before tag push.
+scope_out:
+- Changes to external release infrastructure.
+acceptance_criteria:
+- Runbook exists and is linked from contributor docs.
+- Known failure modes from v0.x are represented with recovery steps.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- scripts/prepare_release_notes.py
+- .github/workflows/release.yml
+risk_tier: low
+required_evidence:
+- runbook doc diff
+- dry-run checklist execution evidence
+timebox: not_applicable
+rollback_plan: Revert documentation/process updates if they conflict with validated release behavior.
+notes:
+- Planning+documentation slice; can precede further automation.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Reduce operator ambiguity and MTTR for release incidents.
+  scope:
+  - Runbook creation.
+  - Failure-mode catalog.
+  constraints:
+  - Keep runbook concise and accurate.
+  assumptions:
+  - Current release workflow remains baseline.
+  decision_rationale: Failures already observed in v0.x should be encoded as durable playbooks.
+  alternatives_considered:
+  - Keep implicit tribal knowledge only (rejected)
+  dependencies:
+  - T-104
+  acceptance_criteria:
+  - Runbook reviewed and linked.
+  validation_plan:
+  - Checklist walk-through + peer review.
+  rollback_risk:
+  - low
+  open_questions:
+  - Should release rollback flow be codified as separate task type?

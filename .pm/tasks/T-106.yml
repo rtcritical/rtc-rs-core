@@ -1,0 +1,75 @@
+schema_version: 2
+task_id: T-106
+title: V1.A2 - Add packaging verification gates to CI/release flow
+epic_id: E-102
+goal_ref: P1
+priority: P1
+status: todo
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T20:42:30Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T20:42:30Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on:
+- T-105
+scope_in:
+- Wire deterministic packaging verification checks into CI/release paths.
+- Ensure artifact presence, checksum, and release-note generation checks are enforceable.
+- Document failure triage path for packaging gate failures.
+scope_out:
+- New distribution channels outside current GitHub release path.
+acceptance_criteria:
+- CI/release gating covers required packaging matrix outputs.
+- Failure modes are actionable with clear remediation notes.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- .github/workflows/ci.yml
+- .github/workflows/release.yml
+- scripts/prepare_release_notes.py
+risk_tier: medium
+required_evidence:
+- ci run with packaging gate pass
+- release dry-run evidence
+timebox: not_applicable
+rollback_plan: Revert gating changes if they block legitimate release flow without remediation.
+notes:
+- Implementation slice follows T-105 planning contract.
+context_refs:
+- .pm/backlog.md
+- .pm/goals.md
+- .pm/scope.md
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Enforce packaging contract automatically.
+  scope:
+  - CI/release checks.
+  - Docs for operator triage.
+  constraints:
+  - Preserve existing successful release path.
+  assumptions:
+  - GitHub Actions remains authoritative.
+  decision_rationale: Automation is needed to keep packaging quality durable.
+  alternatives_considered:
+  - Manual release checklist only (rejected)
+  dependencies:
+  - T-105
+  acceptance_criteria:
+  - Gate is enforced and green on target branch.
+  validation_plan:
+  - CI run + local smoke evidence.
+  rollback_risk:
+  - medium
+  open_questions:
+  - Should packaging gate be required on PRs or release-only?

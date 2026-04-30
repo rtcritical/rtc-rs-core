@@ -4,7 +4,7 @@ title: V1.A1 - Define packaging matrix and consumer contract
 epic_id: E-102
 goal_ref: P1
 priority: P1
-status: todo
+status: done
 owner:
   type: human
   id: nick
@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T20:42:00Z'
+updated_at: '2026-04-30T20:53:00Z'
 updated_by:
   type: agent
   id: clio
@@ -46,6 +46,7 @@ timebox: not_applicable
 rollback_plan: Revert planning/docs deltas if matrix assumptions are invalidated.
 notes:
 - Planning-only slice; no implementation execution in this task.
+- Reviewer sign-off: Nick approved execution in chat (`approve T-105`, 2026-04-30 20:52 UTC).
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md
@@ -72,4 +73,13 @@ execution_readiness:
   rollback_risk:
   - low
   open_questions:
-  - Should shared-library artifacts be required in v1 or best-effort?
+  - Resolved in T-105: shared-library release artifact commitments are best-effort in v1; required gate remains source+headers+checksums+static verification.
+closed_at: '2026-04-30T20:53:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+close_reason: completed
+completion_evidence:
+- docs/release-packaging-contract-v1.md
+- docs/post-v0-roadmap.md

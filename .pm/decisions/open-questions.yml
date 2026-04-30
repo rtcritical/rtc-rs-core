@@ -1,0 +1,10 @@
+schema_version: 1
+questions:
+  - id: OQ-2026-04-30-v1-planning
+    prompt: "Should v1 execution require taskized work items and readiness fields before implementation commits?"
+    status: approved
+    decision: accept
+    rationale: "Enforce PM discipline and execution traceability after v0 sprint exceptions."
+    task_id: T-101
+    resolved_by: nick
+    resolved_at_utc: '2026-04-30T14:10:00Z'

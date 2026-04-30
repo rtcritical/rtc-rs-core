@@ -1,0 +1,94 @@
+schema_version: 2
+task_id: T-101
+title: Establish v1 epic map and PM governance enforcement baseline
+epic_id: E-101
+goal_ref: P1
+priority: P0
+status: done
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-04-30T14:12:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+updated_at: '2026-04-30T14:12:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+depends_on: []
+scope_in:
+- Enable strict_authority_mode in `.pm/project.yml`.
+- Ensure PM toggle checks are mandatory and not advisory.
+- Seed initial v1 epic/task breakdown and make tasks execution-ready.
+scope_out:
+- Implementing v1 product/runtime features.
+acceptance_criteria:
+- strict_authority_mode enabled with taskization and readiness toggles on.
+- CI policy contains PM guards that fail when task binding/readiness are violated.
+- v1 epics/tasks present in `.pm/backlog.md` and `.pm/tasks/T-*.yml`.
+intake_refs:
+- .pm/inbox/raw/2026-04-30-v1-planning-kickoff.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- .pm/project.yml
+- .pm/backlog.md
+- .pm/tasks/T-101.yml
+- .pm/tasks/T-102.yml
+- .pm/tasks/T-103.yml
+- .pm/tasks/T-104.yml
+- .github/workflows/ci.yml
+- .pm/scripts/check_pm_task_binding.py
+risk_tier: medium
+required_evidence:
+- python3 .pm/scripts/validate_pm.py . --strict
+- python3 .pm/scripts/check_pm_toggles.py .
+- python3 .pm/scripts/check_pm_task_binding.py . --path scripts/check_abi_parity.py --path .pm/tasks/T-102.yml
+timebox: not_applicable
+rollback_plan: Revert PM enforcement commit and restore previous project.yml/CI/task files if governance rollout causes unexpected blockages.
+notes:
+- Created after v0 completion to prevent repetition of untracked implementation commits.
+context_refs:
+- .pm/project.yml
+- .pm/backlog.md
+- .pm/config/toggle_registry.yml
+- .pm/procedures/pm-operations.md
+execution_readiness:
+  objective: Re-enable hard PM governance before starting v1 implementation.
+  scope:
+    - Turn on strict authority mode.
+    - Make PM checks mandatory in CI.
+    - Define v1 epics/tasks with readiness fields.
+  constraints:
+    - Do not alter protected PM files without explicit approval.
+    - Keep workflow changes compatible with existing CI jobs.
+  assumptions:
+    - Team agrees that PM task tracking is required for all implementation work.
+  decision_rationale: Restore reliability and auditability after v0 sprint exceptions.
+  alternatives_considered:
+    - Keep advisory checks only (rejected: too easy to bypass)
+    - Use local hooks only (rejected: no remote safety net)
+  dependencies:
+    - Existing PM scripts under `.pm/scripts`.
+  acceptance_criteria:
+    - Governance checks fail on missing task binding/readiness.
+  validation_plan:
+    - Run strict PM validation and CI-equivalent policy checks locally.
+  rollback_risk:
+    - Medium; may initially block PRs until task hygiene catches up.
+  open_questions:
+    - Should release-tag operations also require explicit task-id mapping in metadata?
+closed_at: '2026-04-30T14:12:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+close_reason: completed
+completion_evidence:
+- .pm/project.yml
+- .github/workflows/ci.yml
+- .pm/tasks/T-101.yml

@@ -2,8 +2,8 @@
 """Enforce PM task-binding for implementation commits.
 
 Rule:
-- If staged changes include implementation-affecting paths, require at least one
-  staged .pm/tasks/T-*.yml file in the same commit.
+- If staged/targeted changes include implementation-affecting paths, require at least one
+  .pm/tasks/T-*.yml task file in the same change set.
 
 Implementation paths:
 - scripts/
@@ -45,8 +45,13 @@ def staged_files(repo: Path) -> list[str]:
     return [x.strip() for x in out.splitlines() if x.strip()]
 
 
+def range_files(repo: Path, base: str, head: str) -> list[str]:
+    out = git(repo, "diff", "--name-only", "--diff-filter=ACMR", f"{base}...{head}")
+    return [x.strip() for x in out.splitlines() if x.strip()]
+
+
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Require staged PM task file when implementation paths are staged")
+    p = argparse.ArgumentParser(description="Require PM task file when implementation paths are changed")
     p.add_argument("repo", nargs="?", default=".", help="Repo root")
     p.add_argument(
         "--impl-prefix",
@@ -54,6 +59,9 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help="Additional implementation path prefix (repeatable)",
     )
+    p.add_argument("--base", default="", help="Optional base ref for range mode")
+    p.add_argument("--head", default="", help="Optional head ref for range mode")
+    p.add_argument("--path", action="append", default=[], help="Explicit changed path (repeatable)")
     return p.parse_args()
 
 
@@ -64,18 +72,23 @@ def main() -> int:
         print(f"ERROR: not a git repo: {repo}")
         return 2
 
-    files = staged_files(repo)
+    if args.path:
+        files = sorted(set(str(x).strip() for x in args.path if str(x).strip()))
+    elif args.base and args.head:
+        files = range_files(repo, args.base, args.head)
+    else:
+        files = staged_files(repo)
     prefixes = IMPL_PREFIXES + tuple(str(x).strip() for x in args.impl_prefix if str(x).strip())
 
     impl_changed = [f for f in files if f.startswith(prefixes)]
     if not impl_changed:
-        print("OK: task-binding guard skipped (no implementation paths staged)")
+        print("OK: task-binding guard skipped (no implementation paths changed)")
         return 0
 
     staged_task_files = [f for f in files if TASK_FILE_RE.fullmatch(f)]
     if not staged_task_files:
         print("ERROR: PM task-binding guard failed")
-        print("  - implementation paths are staged but no .pm/tasks/T-*.yml file is staged")
+        print("  - implementation paths changed but no .pm/tasks/T-*.yml file is present in change set")
         print("  implementation files:")
         for f in impl_changed:
             print(f"    - {f}")

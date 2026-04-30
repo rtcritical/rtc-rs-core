@@ -40,6 +40,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: PM validate
+        run: python3 .pm/scripts/validate_pm.py .
+      - name: PM toggles
+        run: python3 .pm/scripts/check_pm_toggles.py .
+      - name: PM task binding (PR range)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          python3 .pm/scripts/check_pm_task_binding.py . \
+            --base "origin/${{ github.base_ref }}" \
+            --head "${{ github.sha }}"
+      - name: PM task binding (push range)
+        if: github.event_name == 'push'
+        run: |
+          python3 .pm/scripts/check_pm_task_binding.py . \
+            --base "${{ github.event.before }}" \
+            --head "${{ github.sha }}"
       - name: Changelog policy
         run: ./scripts/check_changelog.sh
       - name: ABI parity policy

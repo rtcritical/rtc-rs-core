@@ -8,3 +8,11 @@ questions:
     task_id: T-101
     resolved_by: nick
     resolved_at_utc: '2026-04-30T14:10:00Z'
+  - id: OQ-2026-04-30-t106-packaging-gate-scope
+    prompt: "Should packaging gate be required on PRs or release-only?"
+    status: approved
+    decision: require_pr_and_release
+    rationale: "Early PR enforcement prevents late release-only surprises and keeps packaging contract continuously green."
+    task_id: T-106
+    resolved_by: nick
+    resolved_at_utc: '2026-04-30T20:59:00Z'

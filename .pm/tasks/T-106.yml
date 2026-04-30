@@ -4,7 +4,7 @@ title: V1.A2 - Add packaging verification gates to CI/release flow
 epic_id: E-102
 goal_ref: P1
 priority: P1
-status: todo
+status: done
 owner:
   type: human
   id: nick
@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T20:42:30Z'
+updated_at: '2026-04-30T21:00:00Z'
 updated_by:
   type: agent
   id: clio
@@ -72,4 +72,15 @@ execution_readiness:
   rollback_risk:
   - medium
   open_questions:
-  - Should packaging gate be required on PRs or release-only?
+  - Resolved in T-106: packaging gate is required in CI policy and release workflow.
+closed_at: '2026-04-30T21:00:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+close_reason: completed
+completion_evidence:
+- .github/workflows/ci.yml
+- .github/workflows/release.yml
+- scripts/check_packaging_contract.sh
+- docs/release-packaging-gate-triage.md

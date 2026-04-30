@@ -24,28 +24,8 @@ jobs:
       - name: Run tests
         run: cargo test --tests
 
-      - name: Build release artifacts
-        run: |
-          set -euo pipefail
-          mkdir -p dist
-
-          cargo build --release
-          cp target/release/librtc_rs_core.rlib dist/ 2>/dev/null || true
-
-          tar -czf dist/rtc-rs-core-source.tar.gz \
-            --exclude .git \
-            --exclude target \
-            --exclude dist \
-            .
-
-          mkdir -p dist/include
-          cp include/core_v0.h dist/include/
-          tar -czf dist/rtc-rs-core-headers.tar.gz -C dist include
-
-      - name: Generate checksums
-        run: |
-          cd dist
-          sha256sum *.tar.gz > SHA256SUMS
+      - name: Packaging contract gate
+        run: ./scripts/check_packaging_contract.sh
 
       - name: Prepare release notes
         env:

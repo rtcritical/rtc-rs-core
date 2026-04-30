@@ -48,6 +48,8 @@ jobs:
           sha256sum *.tar.gz > SHA256SUMS
 
       - name: Prepare release notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./scripts/prepare_release_notes.py
 
       - name: Create GitHub Release

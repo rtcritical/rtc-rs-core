@@ -75,6 +75,7 @@ LD_LIBRARY_PATH=target/release /tmp/consumer_smoke_callback
 ## Release notes prep
 
 ```bash
+# optional: set GITHUB_TOKEN for label-based categorization
 ./scripts/prepare_release_notes.py
 cat dist/release_notes.md
 ```

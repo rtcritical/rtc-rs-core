@@ -391,7 +391,7 @@ pub extern "C" fn rtc_string(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out:
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, out: *mut *mut rtc_val) -> rtc_status {
-    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+    if cfg!(debug_assertions) && (val_was_freed_ptr(root) || !val_is_live_ptr(root)) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     clear_out(out);
@@ -402,7 +402,7 @@ pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key
     let r = unsafe { &(*root).inner };
     match get(r, &k) {
         Ok(v) => {
-            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) };
+            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: (*root).owner_ctx })) };
             mark_val_alloc(unsafe { *out });
             rtc_status::RTC_OK
         }
@@ -412,7 +412,7 @@ pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, out: *mut *mut rtc_val) -> rtc_status {
-    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+    if cfg!(debug_assertions) && (val_was_freed_ptr(root) || !val_is_live_ptr(root)) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     clear_out(out);
@@ -434,7 +434,7 @@ pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_
     let r = unsafe { &(*root).inner };
     match get_in(r, &ks) {
         Ok(v) => {
-            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) };
+            unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: (*root).owner_ctx })) };
             mark_val_alloc(unsafe { *out });
             rtc_status::RTC_OK
         }
@@ -449,7 +449,7 @@ pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
-    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+    if cfg!(debug_assertions) && (val_was_freed_ptr(root) || !val_is_live_ptr(root)) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     clear_out(out);
@@ -478,14 +478,14 @@ pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_k
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
-    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+    if cfg!(debug_assertions) && (val_was_freed_ptr(root) || !val_is_live_ptr(root)) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     clear_out(out);
     if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
-    if val_was_freed_ptr(val) || !val_is_live_ptr(val) {
+    if cfg!(debug_assertions) && (val_was_freed_ptr(val) || !val_is_live_ptr(val)) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     let mut ks: Vec<Key> = Vec::with_capacity(path.len as usize);
@@ -516,7 +516,7 @@ pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: r
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
-    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+    if cfg!(debug_assertions) && (val_was_freed_ptr(root) || !val_is_live_ptr(root)) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     clear_out(out);
@@ -560,14 +560,14 @@ pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
     let next = unsafe { (*next_ptr).inner.clone() };
     let _ = unsafe { Box::from_raw(next_ptr) };
     match assoc(r, &k, next) {
-        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) }; rtc_status::RTC_OK }
+        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: (*root).owner_ctx })) }; rtc_status::RTC_OK }
         Err(e) => { set_error(ctx, e, "update type conflict"); e }
     }
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
-    if val_was_freed_ptr(root) || !val_is_live_ptr(root) {
+    if cfg!(debug_assertions) && (val_was_freed_ptr(root) || !val_is_live_ptr(root)) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     clear_out(out);
@@ -616,7 +616,7 @@ pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: 
     let next = unsafe { (*next_ptr).inner.clone() };
     let _ = unsafe { Box::from_raw(next_ptr) };
     match assoc_in(r, &ks, next) {
-        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: unsafe { (*(root as *const rtc_val)).owner_ctx } })) }; rtc_status::RTC_OK }
+        Ok(v) => { unsafe { *out = Box::into_raw(Box::new(rtc_val { inner: v, owner_ctx: (*root).owner_ctx })) }; rtc_status::RTC_OK }
         Err(e) => { set_error(ctx, e, "update_in type conflict"); e }
     }
 }
@@ -626,7 +626,7 @@ pub extern "C" fn rtc_val_free(v: *mut rtc_val) -> rtc_status {
     if v.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
-    if val_was_freed_ptr(v) || !val_is_live_ptr(v) {
+    if cfg!(debug_assertions) && (val_was_freed_ptr(v) || !val_is_live_ptr(v)) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
     mark_val_freed(v);

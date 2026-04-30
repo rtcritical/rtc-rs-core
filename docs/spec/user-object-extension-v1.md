@@ -1,15 +1,15 @@
 # User Object Extension (v1, Non-Nucleus)
 
 ## Purpose
-Allow consumers to store and pass custom application objects through collection operations without modifying the frozen JSON-compatible nucleus.
+Allow consumers to store and pass custom application objects through collection operations without modifying the frozen JSON-compatible core.
 
 ## Scope
 - Extension-only value kind for user objects.
 - Nucleus remains unchanged (`nil/bool/number/string/array/object`).
-- JSON companion remains unchanged for v0 nucleus behavior.
+- JSON companion remains unchanged for v0 core behavior.
 
 ## Design Goals
-1. No nucleus contract breakage.
+1. No core contract breakage.
 2. Preserve Clojure-ish nil-safe traversal semantics.
 3. Support internal + external consumers needing non-JSON values.
 4. Keep ABI safety explicit around ownership and callbacks.
@@ -52,17 +52,17 @@ Payload shape (conceptual):
 
 ## JSON Boundary Behavior
 - JSON companion does not serialize user objects by default.
-- Encoding behavior for user objects must be explicit policy (error, redaction, custom adapter), outside nucleus.
+- Encoding behavior for user objects must be explicit policy (error, redaction, custom adapter), outside core.
 
 ## Compatibility Statement
-This extension is additive and does not modify nucleus types/semantics/status taxonomy.
+This extension is additive and does not modify core types/semantics/status taxonomy.
 
 
 ## Future Extension Note: Generic Map Keys
-A future extension may introduce generic map-key support (`(Value, Value)` pairs) without changing frozen nucleus behavior.
+A future extension may introduce generic map-key support (`(Value, Value)` pairs) without changing frozen core behavior.
 
 Compatibility strategy:
-- Keep nucleus/public v0 API semantics string-key-first for JSON-compatible object behavior.
+- Keep core/public v0 API semantics string-key-first for JSON-compatible object behavior.
 - Introduce generic-key map as an additive extension namespace/type in v1+.
 - Preserve existing APIs; add opt-in extension APIs rather than mutating current signatures.
 

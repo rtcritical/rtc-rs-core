@@ -64,6 +64,9 @@ cargo test --tests
 MIT. See `LICENSE`.
 
 
-## Callback contract
+## ABI safety contract (C FFI)
 
-Updater callbacks used via the C ABI must not unwind/panic across the FFI boundary. Return an error status instead.
+- `rtc_val*` values are **context-owned**. For mutating calls (`rtc_nassoc*`, `rtc_nupdate*`), all input/output values must belong to the provided `rtc_ctx*`.
+- Null out-params are rejected; on error paths, out-pointers are cleared before return.
+- Updater callbacks used via the C ABI must not unwind/panic across the FFI boundary. Return an error status instead.
+- In debug builds (`debug_assertions`), additional pointer-liveness checks run to catch use-after-free / stale-pointer misuse early.

@@ -63,7 +63,9 @@ typedef struct rtc_path {
 } rtc_path;
 
 typedef rtc_status (*rtc_update_fn)(rtc_ctx* ctx, rtc_val current, void* user_data, rtc_val* out_next);
-/* Contract: callback must not unwind/panic across C ABI boundary. */
+/* Contract: callback must not unwind/panic across C ABI boundary.
+ * `out_next` must be set to a value owned by `ctx` when returning RTC_OK.
+ */
 
 /* context lifecycle */
 rtc_status rtc_ctx_new(rtc_ctx** out_ctx);
@@ -87,7 +89,13 @@ rtc_status rtc_as_i64(rtc_val v, int64_t* out);
 rtc_status rtc_as_f64(rtc_val v, double* out);
 rtc_status rtc_as_string(rtc_val v, rtc_str* out);
 
-/* strict nucleus ops */
+/* strict core ops
+ * Notes:
+ * - `rtc_get*` read operations return RTC_NIL for missing keys/paths.
+ * - Mutating `rtc_n*` operations require context ownership consistency:
+ *   values passed in and produced must belong to `ctx`.
+ * - Implementations clear `out` on entry so callers can treat non-null on error as bug.
+ */
 rtc_status rtc_get(rtc_val root, rtc_key key, rtc_val* out);
 rtc_status rtc_get_in(rtc_val root, rtc_path path, rtc_val* out);
 rtc_status rtc_nassoc(rtc_ctx* ctx, rtc_val root, rtc_key key, rtc_val val, rtc_val* out);

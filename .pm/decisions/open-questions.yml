@@ -32,3 +32,11 @@ questions:
     task_id: T-107
     resolved_by: nick
     resolved_at_utc: '2026-04-30T22:36:00Z'
+  - id: OQ-2026-04-30-t108-callback-contract-doc-scope
+    prompt: "Should T-108 encode callback lifecycle guarantees in existing ABI header/spec comments rather than introducing a new standalone callback spec document?"
+    status: approved
+    decision: header-and-spec-comment-update
+    rationale: "Keeps scope tight for lifecycle hardening while improving consumer clarity without expanding artifact footprint."
+    task_id: T-108
+    resolved_by: nick
+    resolved_at_utc: '2026-04-30T22:40:00Z'

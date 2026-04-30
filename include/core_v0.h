@@ -65,6 +65,11 @@ typedef struct rtc_path {
 typedef rtc_status (*rtc_update_fn)(rtc_ctx* ctx, const rtc_val* current, void* user_data, rtc_val** out_next);
 /* Contract: callback must not unwind/panic across C ABI boundary.
  * `out_next` must be set to a value owned by `ctx` when returning RTC_OK.
+ * Callback lifecycle/status contract:
+ * - `fn == NULL` is invalid and returns RTC_ERR_INVALID_ARG.
+ * - If callback returns non-RTC_OK, that status is propagated unchanged.
+ * - If callback returns RTC_OK with `*out_next == NULL`, operation fails with RTC_ERR_STATE.
+ * - If callback returns a value owned by a different context, operation fails with RTC_ERR_INVALID_ARG.
  */
 
 /* context lifecycle */

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Release notes prep now categorizes merged PRs semantically by GitHub labels (using API lookup), with heuristic fallback when labels are unavailable.
 - Label-category-based release notes prep script (`scripts/prepare_release_notes.py`) wired into release workflow via `body_path`.
 - Shared-library callback consumer smoke harness (`harness/consumer_smoke_callback.c`) covering callback-based mutation flow from a C caller.
 - ABI parity policy script (`scripts/check_abi_parity.py`) to fail CI when C header declarations and Rust `extern "C"` exports drift.

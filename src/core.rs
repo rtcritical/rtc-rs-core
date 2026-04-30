@@ -219,6 +219,14 @@ unsafe fn key_from_ffi(k: &rtc_key) -> Result<Key, rtc_status> {
     }
 }
 
+
+
+fn clear_out(out: *mut *mut rtc_val) {
+    if !out.is_null() {
+        unsafe { *out = ptr::null_mut(); }
+    }
+}
+
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_ctx_new(out_ctx: *mut *mut rtc_ctx) -> rtc_status {
     if out_ctx.is_null() {
@@ -266,6 +274,7 @@ pub extern "C" fn rtc_last_error_message(ctx: *mut rtc_ctx) -> *const c_char {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nil(ctx: *mut rtc_ctx, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -276,6 +285,7 @@ pub extern "C" fn rtc_nil(ctx: *mut rtc_ctx, out: *mut *mut rtc_val) -> rtc_stat
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_bool(ctx: *mut rtc_ctx, b: c_int, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -286,6 +296,7 @@ pub extern "C" fn rtc_bool(ctx: *mut rtc_ctx, b: c_int, out: *mut *mut rtc_val) 
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_i64(ctx: *mut rtc_ctx, n: i64, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -296,6 +307,7 @@ pub extern "C" fn rtc_i64(ctx: *mut rtc_ctx, n: i64, out: *mut *mut rtc_val) -> 
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_f64(ctx: *mut rtc_ctx, n: f64, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -306,6 +318,7 @@ pub extern "C" fn rtc_f64(ctx: *mut rtc_ctx, n: f64, out: *mut *mut rtc_val) -> 
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_string(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || s.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -318,6 +331,7 @@ pub extern "C" fn rtc_string(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out:
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if root.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -334,6 +348,7 @@ pub extern "C" fn rtc_get(_ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if root.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -366,6 +381,7 @@ pub extern "C" fn rtc_get_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -386,6 +402,7 @@ pub extern "C" fn rtc_nassoc(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_k
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, val: *const rtc_val, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || root.is_null() || val.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -416,6 +433,7 @@ pub extern "C" fn rtc_nassoc_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: r
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_key, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || root.is_null() || out.is_null() {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }
@@ -447,6 +465,7 @@ pub extern "C" fn rtc_nupdate(ctx: *mut rtc_ctx, root: *const rtc_val, key: rtc_
 
 #[unsafe(no_mangle)]
 pub extern "C" fn rtc_nupdate_in(ctx: *mut rtc_ctx, root: *const rtc_val, path: rtc_path, f: rtc_update_fn, user_data: *mut std::ffi::c_void, out: *mut *mut rtc_val) -> rtc_status {
+    clear_out(out);
     if ctx.is_null() || root.is_null() || out.is_null() || (path.len > 0 && path.elems.is_null()) {
         return rtc_status::RTC_ERR_INVALID_ARG;
     }

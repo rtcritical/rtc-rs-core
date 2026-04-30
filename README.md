@@ -16,3 +16,14 @@ Planning/specification phase with PM-managed execution.
 ```bash
 ./scripts/run_perf_baseline.sh
 ```
+
+
+CSV output:
+```bash
+./scripts/run_perf_baseline.sh csv
+```
+
+JSON output:
+```bash
+./scripts/run_perf_baseline.sh json
+```

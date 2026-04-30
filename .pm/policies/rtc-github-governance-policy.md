@@ -17,3 +17,8 @@
 
 - Unless explicitly held by Nick, Clio may merge PRs when all required checks are green and branch protection is satisfied.
 - Human approval remains required for exceptional/high-risk changes (for example: destructive repository operations, security posture downgrades, or emergency release-path overrides).
+
+## Emergency bypass policy
+
+- Local-hook bypass is emergency-only and does not waive required CI checks.
+- Any bypass event must be explicitly approved by Nick, time-bounded, and recorded with restoration evidence.

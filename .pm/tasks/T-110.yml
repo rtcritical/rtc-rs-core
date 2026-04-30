@@ -4,7 +4,7 @@ title: V1.C2 - Governance guard consistency across local hooks and CI
 epic_id: E-104
 goal_ref: P1
 priority: P2
-status: todo
+status: done
 owner:
   type: human
   id: nick
@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T20:44:30Z'
+updated_at: '2026-04-30T23:46:00Z'
 updated_by:
   type: agent
   id: clio
@@ -37,7 +37,9 @@ decision_refs:
 evidence_refs:
 - .github/workflows/ci.yml
 - .githooks/pre-commit
-- .pm/policies
+- .pm/policies/rtc-github-governance-policy.md
+- .pm/procedures/rtc-github-governance-runbook.md
+- .pm/procedures/rtc-github-governance-guard-matrix.md
 risk_tier: low
 required_evidence:
 - guard matrix doc
@@ -46,6 +48,7 @@ timebox: not_applicable
 rollback_plan: Revert governance wiring changes that block legitimate contributor flow.
 notes:
 - Completes E-104 by making governance behavior predictable in all execution contexts.
+- Added explicit local-vs-CI guard matrix and emergency bypass expiry/restoration policy.
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md
@@ -73,3 +76,15 @@ execution_readiness:
   - low
   open_questions:
   - Do we require periodic guard matrix audits as recurring task?
+closed_at: '2026-04-30T23:46:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+close_reason: completed
+completion_evidence:
+- .pm/procedures/rtc-github-governance-guard-matrix.md
+- .pm/policies/rtc-github-governance-policy.md
+- .pm/procedures/rtc-github-governance-runbook.md
+- python3 .pm/scripts/check_pm_runtime_brief.py .
+- python3 .pm/scripts/validate_pm.py .

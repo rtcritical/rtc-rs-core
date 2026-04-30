@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T21:00:00Z'
+updated_at: '2026-04-30T22:30:00Z'
 updated_by:
   type: agent
   id: clio
@@ -38,6 +38,7 @@ evidence_refs:
 - .github/workflows/ci.yml
 - .github/workflows/release.yml
 - scripts/prepare_release_notes.py
+- .pm/decisions/open-questions.yml
 risk_tier: medium
 required_evidence:
 - ci run with packaging gate pass
@@ -46,6 +47,7 @@ timebox: not_applicable
 rollback_plan: Revert gating changes if they block legitimate release flow without remediation.
 notes:
 - Implementation slice follows T-105 planning contract.
+- 2026-04-30 follow-up: release-notes gate now supports no-tag baseline fallback for CI policy robustness.
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md
@@ -84,3 +86,5 @@ completion_evidence:
 - .github/workflows/release.yml
 - scripts/check_packaging_contract.sh
 - docs/release-packaging-gate-triage.md
+- scripts/prepare_release_notes.py
+- .pm/decisions/open-questions.yml

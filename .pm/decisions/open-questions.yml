@@ -16,3 +16,11 @@ questions:
     task_id: T-106
     resolved_by: nick
     resolved_at_utc: '2026-04-30T20:59:00Z'
+  - id: OQ-2026-04-30-release-notes-no-tag-baseline
+    prompt: "Should release-notes generation fail when no baseline tag exists on repository history?"
+    status: approved
+    decision: allow_no_tag_fallback
+    rationale: "PR policy checks must be robust on repos/branches without reachable tags; fallback to merge-log over HEAD avoids false failures."
+    task_id: T-106
+    resolved_by: nick
+    resolved_at_utc: '2026-04-30T22:29:00Z'

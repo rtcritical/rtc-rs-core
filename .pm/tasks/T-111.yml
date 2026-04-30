@@ -51,6 +51,20 @@ timebox: not_applicable
 rollback_plan: Revert draft docs if model introduces unsafe ambiguity; keep current static governance behavior.
 notes:
 - Requested by Nick after epic-branch CI flow policy adoption.
+- Draft override precedence matrix (v0):
+  1) Safety hard-stops (non-overridable): protected-branch required checks, destructive-op approval gates, explicit incident lockouts.
+  2) Repo explicit override config (project-local): may tighten or relax selected defaults within allowed bounds.
+  3) Active facet defaults (github.core/github.release-ops): baseline behavior when no repo override is present.
+  4) Kernel PM baseline: fallback invariants for execution/readiness/governance checks.
+- Draft configurable knobs (for design phase):
+  - 'delivery_branch_mode: per_task_pr | per_epic_pr (default: per_epic_pr)'
+  - 'task_progression_gate: require_green_ci | allow_manual_override (default: require_green_ci)'
+  - 'auto_merge_actor: clio_enabled | human_only (default: clio_enabled)'
+  - 'drift_sync_mode: rebase_each_task | rebase_daily | merge_main_periodic (default: rebase_each_task)'
+  - 'pr_split_thresholds: max_net_loc + risk_domain_split flags (default: enabled)'
+- Safety boundary draft:
+  - Overrides may not disable mandatory branch protection checks.
+  - Overrides that reduce review/approval rigor require explicit human approval entry in open-questions.
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md

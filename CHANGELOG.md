@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- v0 closeout checklist and acceptance matrix (`docs/v0-closeout.md`) documenting freeze scope, validation gates, consumer smoke expectations, and release-readiness exit criteria.
 - Release notes now prefer PR-title bullets (`<title> (#<n>)`) when GitHub metadata is available, improving readability over raw merge-subject lines.
 - Release-notes prep guardrail now fails when merge commits exist but categorization would produce zero assigned entries, preventing silent empty-note regressions.
 - Release notes prep now categorizes merged PRs semantically by GitHub labels (using API lookup), with heuristic fallback when labels are unavailable.

@@ -9,7 +9,7 @@ RTCritical’s universal hierarchical data model library.
 
 ## Status
 
-**v0 complete**
+**v0 complete** (feature-frozen; closeout checklist in `docs/v0-closeout.md`)
 
 ## Implemented API surface
 
@@ -44,6 +44,7 @@ Operations:
 
 ## Source of truth
 - ADR and specs under `docs/`
+- v0 closeout matrix in `docs/v0-closeout.md`
 - PM workflow under `.pm/`
 
 ## Tests

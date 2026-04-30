@@ -16,4 +16,4 @@ All notable changes to this project will be documented in this file.
 - C header operation notes now document read/mutation behavior, out-parameter clearing expectations, and ownership consistency requirements.
 
 ### Fixed
-- 
+- Added ABI test coverage for callback lifecycle safety: `rtc_nupdate` now explicitly tested to reject callback-produced values from a different context.

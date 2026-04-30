@@ -25,3 +25,9 @@
 
 - Default: Clio may merge once required checks pass and no explicit hold is present.
 - On merge, immediately fast-forward local `main` and re-seed the next delivery branch from updated `origin/main`.
+
+## Guard parity and emergency bypass governance
+
+- Canonical guard parity map: `.pm/procedures/rtc-github-governance-guard-matrix.md`.
+- Treat CI required checks as merge-authoritative even when local hooks were bypassed for emergency authoring.
+- Emergency bypass requires explicit Nick approval plus PM evidence entry with expiry and restoration confirmation.

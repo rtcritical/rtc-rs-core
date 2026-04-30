@@ -13,3 +13,16 @@ Cargo.lock
 
 # Misc
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Python/cache
+__pycache__/
+*.pyc
+.pm/scripts/__pycache__/
+
+# PM runtime/artifacts
+.pm.backup.*
+.pm/runtime/
+.pm/generated/

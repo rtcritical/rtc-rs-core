@@ -125,6 +125,17 @@ def main():
 
         buckets.setdefault(title, []).append(subject)
 
+    total_assigned = sum(len(v) for v in buckets.values())
+    if lines and total_assigned == 0:
+        print("Release-notes guard: merges exist but no categories received entries", file=sys.stderr)
+        sys.exit(2)
+    if total_assigned != len(lines):
+        print(
+            f"Release-notes guard: assignment mismatch (merges={len(lines)} assigned={total_assigned})",
+            file=sys.stderr,
+        )
+        sys.exit(3)
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with OUT.open("w", encoding="utf-8") as f:
         f.write(f"## Release notes ({head})\n\n")

@@ -80,6 +80,10 @@ LD_LIBRARY_PATH=target/release /tmp/consumer_smoke_callback
 cat dist/release_notes.md
 ```
 
+Guardrail behavior:
+- If merge commits exist in the release range, the script fails if categorization would emit zero assigned entries.
+- This prevents silently publishing an empty-categories release note due to parsing/regression errors.
+
 ## License
 
 MIT. See `LICENSE`.

@@ -345,3 +345,49 @@ fn abi_error_contract_preserves_callback_error_without_overwrite() {
         assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
     }
 }
+
+#[test]
+fn abi_update_in_callback_returning_foreign_ctx_val_rejected() {
+    unsafe {
+        let mut c1: *mut rtc_ctx = ptr::null_mut();
+        let mut c2: *mut rtc_ctx = ptr::null_mut();
+        assert_eq!(rtc_ctx_new(&mut c1), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_new(&mut c2), rtc_status::RTC_OK);
+
+        let mut root: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_nil(c1, &mut root), rtc_status::RTC_OK);
+
+        let (_ks, k) = make_str_key("x");
+        let path_elems = vec![k];
+        let path = rtc_path { elems: path_elems.as_ptr(), len: 1 };
+        let mut out: *mut rtc_val = 1usize as *mut rtc_val;
+        let st = rtc_nupdate_in(c1, root, path, Some(cb_return_foreign_ctx_val), c2 as *mut std::ffi::c_void, &mut out);
+        assert_eq!(st, rtc_status::RTC_ERR_INVALID_ARG);
+        assert!(out.is_null());
+
+        assert_eq!(rtc_val_free(root), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(c2), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(c1), rtc_status::RTC_OK);
+    }
+}
+
+#[test]
+fn abi_update_in_requires_callback() {
+    unsafe {
+        let mut ctx: *mut rtc_ctx = ptr::null_mut();
+        assert_eq!(rtc_ctx_new(&mut ctx), rtc_status::RTC_OK);
+
+        let mut root: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_nil(ctx, &mut root), rtc_status::RTC_OK);
+
+        let (_ks, k) = make_str_key("x");
+        let path_elems = vec![k];
+        let path = rtc_path { elems: path_elems.as_ptr(), len: 1 };
+        let mut out: *mut rtc_val = ptr::null_mut();
+        assert_eq!(rtc_nupdate_in(ctx, root, path, None, ptr::null_mut(), &mut out), rtc_status::RTC_ERR_INVALID_ARG);
+        assert!(out.is_null());
+
+        assert_eq!(rtc_val_free(root), rtc_status::RTC_OK);
+        assert_eq!(rtc_ctx_free(ctx), rtc_status::RTC_OK);
+    }
+}

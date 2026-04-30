@@ -4,7 +4,7 @@ title: V1.B2 - Harden callback lifecycle guarantees and cross-context rejection 
 epic_id: E-103
 goal_ref: P1
 priority: P1
-status: todo
+status: done
 owner:
   type: human
   id: nick
@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T20:43:30Z'
+updated_at: '2026-04-30T22:40:00Z'
 updated_by:
   type: agent
   id: clio
@@ -36,6 +36,8 @@ decision_refs:
 - .pm/decisions/open-questions.yml
 evidence_refs:
 - tests/abi_surface.rs
+- include/core_v0.h
+- docs/spec/core_v0.h
 - harness/consumer_smoke_callback.c
 risk_tier: medium
 required_evidence:
@@ -45,6 +47,7 @@ timebox: not_applicable
 rollback_plan: Revert lifecycle hardening changes that introduce callback regressions.
 notes:
 - Supersedes earlier panic-unwind test approach that caused SIGABRT.
+- Added deterministic callback lifecycle coverage for update_in cross-context return rejection and null callback rejection; panic-abort path remains out-of-scope.
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md
@@ -71,4 +74,19 @@ execution_readiness:
   rollback_risk:
   - medium
   open_questions:
-  - Should callback contract get a dedicated policy/spec doc?
+  - Deferred: dedicated callback policy/spec doc can be added later if needed.
+closed_at: '2026-04-30T22:40:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+close_reason: completed
+completion_evidence:
+- tests/abi_surface.rs
+- include/core_v0.h
+- docs/spec/core_v0.h
+- harness/consumer_smoke_callback.c
+- cargo test --tests
+- cargo build --release
+- LD_LIBRARY_PATH=target/release /tmp/consumer_smoke_callback
+- ./scripts/check_abi_parity.py

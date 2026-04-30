@@ -155,6 +155,18 @@ pub enum rtc_status {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum rtc_kind {
+    RTC_NIL = 0,
+    RTC_BOOL = 1,
+    RTC_I64 = 2,
+    RTC_F64 = 3,
+    RTC_STR = 4,
+    RTC_VEC = 5,
+    RTC_MAP = 6,
+}
+
+#[repr(C)]
 pub enum rtc_key_kind {
     RTC_KEY_STR = 1,
     RTC_KEY_INDEX = 2,
@@ -387,6 +399,83 @@ pub extern "C" fn rtc_string(ctx: *mut rtc_ctx, s: *const c_char, len: u64, out:
     unsafe { *out = Box::into_raw(v) };
     mark_val_alloc(unsafe { *out });
     rtc_status::RTC_OK
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_kind_of(v: *const rtc_val, out_kind: *mut rtc_kind) -> rtc_status {
+    if v.is_null() || out_kind.is_null() {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    let kind = match unsafe { &(*v).inner } {
+        Value::Nil => rtc_kind::RTC_NIL,
+        Value::Bool(_) => rtc_kind::RTC_BOOL,
+        Value::I64(_) => rtc_kind::RTC_I64,
+        Value::F64(_) => rtc_kind::RTC_F64,
+        Value::Str(_) => rtc_kind::RTC_STR,
+        Value::Vec(_) => rtc_kind::RTC_VEC,
+        Value::Map(_) => rtc_kind::RTC_MAP,
+    };
+    unsafe { *out_kind = kind };
+    rtc_status::RTC_OK
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_as_bool(v: *const rtc_val, out: *mut c_int) -> rtc_status {
+    if v.is_null() || out.is_null() {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    match unsafe { &(*v).inner } {
+        Value::Bool(b) => {
+            unsafe { *out = if *b { 1 } else { 0 } };
+            rtc_status::RTC_OK
+        }
+        _ => rtc_status::RTC_ERR_TYPE,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_as_i64(v: *const rtc_val, out: *mut i64) -> rtc_status {
+    if v.is_null() || out.is_null() {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    match unsafe { &(*v).inner } {
+        Value::I64(n) => {
+            unsafe { *out = *n };
+            rtc_status::RTC_OK
+        }
+        _ => rtc_status::RTC_ERR_TYPE,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_as_f64(v: *const rtc_val, out: *mut f64) -> rtc_status {
+    if v.is_null() || out.is_null() {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    match unsafe { &(*v).inner } {
+        Value::F64(n) => {
+            unsafe { *out = *n };
+            rtc_status::RTC_OK
+        }
+        _ => rtc_status::RTC_ERR_TYPE,
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn rtc_as_string(v: *const rtc_val, out: *mut rtc_str) -> rtc_status {
+    if v.is_null() || out.is_null() {
+        return rtc_status::RTC_ERR_INVALID_ARG;
+    }
+    match unsafe { &(*v).inner } {
+        Value::Str(s) => {
+            unsafe {
+                (*out).ptr = s.as_ptr() as *const c_char;
+                (*out).len = s.len() as u64;
+            }
+            rtc_status::RTC_OK
+        }
+        _ => rtc_status::RTC_ERR_TYPE,
+    }
 }
 
 #[unsafe(no_mangle)]

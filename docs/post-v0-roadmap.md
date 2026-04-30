@@ -41,6 +41,8 @@ Move from validated v0 baseline into predictable v0.x iteration with explicit pr
 ### C1. Release runbook codification
 - Consolidate release incident patterns and mitigation commands.
 - Gate: `docs/release-runbook.md` + reproducible checklist.
+- Implemented baseline location: `.pm/procedures/rtc-github-release-ops-runbook.md`
+- Verification checklist: `.pm/templates/rtc-github-release-verification-checklist.md`
 
 ### C2. API lifecycle notes
 - Add deprecation/versioning notes for post-v0 evolution.

@@ -4,7 +4,7 @@ title: V1.C1 - Release governance runbook and incident handling hardening
 epic_id: E-104
 goal_ref: P1
 priority: P2
-status: todo
+status: done
 owner:
   type: human
   id: nick
@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-04-30
-updated_at: '2026-04-30T20:44:00Z'
+updated_at: '2026-04-30T23:42:00Z'
 updated_by:
   type: agent
   id: clio
@@ -37,6 +37,9 @@ decision_refs:
 evidence_refs:
 - scripts/prepare_release_notes.py
 - .github/workflows/release.yml
+- .pm/procedures/rtc-github-release-ops-runbook.md
+- .pm/templates/rtc-github-release-verification-checklist.md
+- docs/post-v0-roadmap.md
 risk_tier: low
 required_evidence:
 - runbook doc diff
@@ -45,6 +48,7 @@ timebox: not_applicable
 rollback_plan: Revert documentation/process updates if they conflict with validated release behavior.
 notes:
 - Planning+documentation slice; can precede further automation.
+- Added deterministic preflight go/no-go, failure-mode recovery playbooks, and required evidence capture checklist.
 context_refs:
 - .pm/backlog.md
 - .pm/goals.md
@@ -72,3 +76,15 @@ execution_readiness:
   - low
   open_questions:
   - Should release rollback flow be codified as separate task type?
+closed_at: '2026-04-30T23:42:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-04-30
+close_reason: completed
+completion_evidence:
+- .pm/procedures/rtc-github-release-ops-runbook.md
+- .pm/templates/rtc-github-release-verification-checklist.md
+- docs/post-v0-roadmap.md
+- python3 .pm/scripts/check_pm_runtime_brief.py .
+- python3 .pm/scripts/validate_pm.py .

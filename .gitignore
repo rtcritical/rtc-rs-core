@@ -26,3 +26,6 @@ __pycache__/
 .pm.backup.*
 .pm/runtime/
 .pm/generated/
+
+# Generated packaging/release artifacts
+/dist/

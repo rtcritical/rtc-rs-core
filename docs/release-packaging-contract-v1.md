@@ -17,6 +17,7 @@ Define the v1 packaging commitments and release acceptance contract before CI/re
 | Static library build artifact (`librtc_rs_core.a`) | Build output for release commit | Required | Must be buildable from release source on supported toolchain; consumers can statically link via documented flow. | Build + static consumer smoke command path passes for release commit. |
 | Shared library build artifact (`librtc_rs_core.so`/platform equivalent) | Build output for release commit | Best-effort (v1) | Targeted for callback/interop validation and consumer convenience; temporary gaps do not block v1 release if required artifacts pass. | Shared callback smoke path attempted and evidence recorded when available. |
 | Optional prebuilt platform binaries | Release assets by platform/arch | Best-effort (v1) | Convenience channel only; not required for v1 release acceptance. | If published, include checksum coverage and platform label clarity. |
+| Packaging manifest (`packaging_manifest.json`) | Release artifact metadata in `dist/` | Required (v1 process) | Must describe required artifacts and optional prebuilt entries for deterministic consumer inspection. | Manifest exists and names required artifacts; optional prebuilt entries are explicit and non-blocking. |
 
 ## Release no-go criteria (v1)
 
@@ -28,6 +29,8 @@ A release is **no-go** when any required item below is missing or invalid:
 4. Required build/consumer verification evidence for static path absent or failing.
 
 Best-effort artifacts (shared library convenience outputs / optional prebuilt binaries) do **not** block v1 release by themselves, but must be logged as follow-up if absent or failing.
+
+Manifest generation is required for release-process validation, but optional prebuilt entries inside the manifest remain non-blocking.
 
 ## Consumer verification contract
 

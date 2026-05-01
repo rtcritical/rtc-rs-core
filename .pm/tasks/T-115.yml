@@ -1,0 +1,80 @@
+schema_version: 2
+task_id: T-115
+title: V1.B3 - Error taxonomy tightening and targeted tests
+epic_id: E-103
+goal_ref: P1
+priority: P1
+status: done
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-05-01T04:35:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+updated_at: '2026-05-01T04:50:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+depends_on:
+- T-108
+scope_in:
+- Document status-to-scenario taxonomy for v1 surfaces.
+- Add missing targeted tests for key status paths.
+scope_out:
+- Expanding status enum.
+acceptance_criteria:
+- Taxonomy doc exists and maps important paths to stable status codes.
+- Tests cover selected previously implicit error paths.
+intake_refs:
+- include/core_v0.h
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- tests/abi_surface.rs
+- docs/spec/core_v0.h
+risk_tier: low
+required_evidence:
+- taxonomy doc
+- test output
+timebox: not_applicable
+rollback_plan: Revert non-essential test additions if unstable.
+notes:
+- Part of one-bundle T-112..T-117 execution.
+context_refs:
+- .pm/backlog.md
+closed_at: '2026-05-01T04:50:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+close_reason: completed
+completion_evidence:
+- docs/error-taxonomy-v1.md
+- cargo test --tests
+
+execution_readiness:
+  objective: Document stable error taxonomy mapping and strengthen targeted coverage.
+  scope:
+  - Add error taxonomy guidance doc.
+  - Ensure targeted tests align with mapping intent.
+  constraints:
+  - No ABI/status enum expansion.
+  assumptions:
+  - Existing status set is sufficient for v1 scope.
+  decision_rationale: Improves predictability for integrators and reviewers.
+  alternatives_considered:
+  - Keep status semantics implicit in tests only (rejected)
+  dependencies:
+  - T-108
+  acceptance_criteria:
+  - Taxonomy doc committed and tests remain green.
+  validation_plan:
+  - cargo test --tests and review mapping coverage.
+  rollback_risk:
+  - low
+  open_questions:
+  - Should taxonomy be copied into public header comments in a later task?

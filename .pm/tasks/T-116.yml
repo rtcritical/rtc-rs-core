@@ -1,0 +1,77 @@
+schema_version: 2
+task_id: T-116
+title: V1.B4 - Lightweight property tests for core invariants
+epic_id: E-103
+goal_ref: P1
+priority: P1
+status: done
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-05-01T04:35:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+updated_at: '2026-05-01T04:50:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+depends_on:
+- T-115
+scope_in:
+- Add deterministic lightweight property-style tests without new fuzz infra.
+- Run in existing test pipeline.
+scope_out:
+- Dedicated fuzzing infrastructure.
+acceptance_criteria:
+- Property tests added and passing in cargo test --tests.
+intake_refs:
+- .pm/backlog.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- tests/
+risk_tier: low
+required_evidence:
+- property test output
+timebox: not_applicable
+rollback_plan: Revert if introducing nondeterminism.
+notes:
+- Part of one-bundle T-112..T-117 execution.
+context_refs:
+- .pm/backlog.md
+closed_at: '2026-05-01T04:50:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+close_reason: completed
+completion_evidence:
+- tests/property_invariants.rs
+- cargo test --tests
+
+execution_readiness:
+  objective: Add deterministic property-style tests for core invariants.
+  scope:
+  - Add repeatable invariant tests for assoc/get and nested update behavior.
+  - Keep tests in existing suite without external fuzz tooling.
+  constraints:
+  - Must be deterministic and fast.
+  assumptions:
+  - Small-loop property-style tests provide sufficient early signal.
+  decision_rationale: Increase confidence against subtle regression patterns.
+  alternatives_considered:
+  - Introduce full fuzz framework now (deferred)
+  dependencies:
+  - T-115
+  acceptance_criteria:
+  - New property tests pass in cargo test --tests.
+  validation_plan:
+  - Execute test suite and confirm deterministic output.
+  rollback_risk:
+  - low
+  open_questions:
+  - Should these invariants be mirrored in C-harness parity tests later?

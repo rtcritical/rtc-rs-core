@@ -1,0 +1,79 @@
+schema_version: 2
+task_id: T-117
+title: V1.C3 - API lifecycle notes and CONTRIBUTING alignment
+epic_id: E-104
+goal_ref: P1
+priority: P2
+status: done
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-05-01T04:35:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+updated_at: '2026-05-01T04:50:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+depends_on:
+- T-110
+scope_in:
+- Add API lifecycle/deprecation/versioning guidance for post-v0 changes.
+- Link guidance in CONTRIBUTING and roadmap/governance docs.
+scope_out:
+- ABI/API scope expansion.
+acceptance_criteria:
+- Lifecycle guidance doc exists and is linked from contributor flow.
+intake_refs:
+- .pm/backlog.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- CONTRIBUTING.md
+- docs/spec/core_v0.h
+risk_tier: low
+required_evidence:
+- lifecycle doc diff
+- link verification
+timebox: not_applicable
+rollback_plan: Revert doc-only changes if conflicting with governance policy.
+notes:
+- Part of one-bundle T-112..T-117 execution.
+context_refs:
+- .pm/backlog.md
+closed_at: '2026-05-01T04:50:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+close_reason: completed
+completion_evidence:
+- docs/api-lifecycle-v1.md
+- CONTRIBUTING.md
+
+execution_readiness:
+  objective: Codify API lifecycle/deprecation/versioning guidance and contributor linkage.
+  scope:
+  - Add lifecycle guidance document.
+  - Link from CONTRIBUTING and roadmap.
+  constraints:
+  - Preserve v0 stability stance.
+  assumptions:
+  - Governance docs remain source of enforcement for lifecycle changes.
+  decision_rationale: Prevent ambiguous change-class decisions in future bundles.
+  alternatives_considered:
+  - Keep lifecycle guidance informal in chat/process (rejected)
+  dependencies:
+  - T-110
+  acceptance_criteria:
+  - Lifecycle doc added and linked in contributor flow.
+  validation_plan:
+  - Link inspection + PM validation checks.
+  rollback_risk:
+  - low
+  open_questions:
+  - Should lifecycle classes be encoded as a PM checklist template?

@@ -1,0 +1,79 @@
+schema_version: 2
+task_id: T-113
+title: V1.A4 - Consumer quickstart bundle and CI wiring
+epic_id: E-102
+goal_ref: P1
+priority: P1
+status: done
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-05-01T04:35:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+updated_at: '2026-05-01T04:50:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+depends_on:
+- T-112
+scope_in:
+- Add consumer quickstart doc for static/shared usage.
+- Add executable quickstart check script used in CI/policy.
+scope_out:
+- New distribution channels.
+acceptance_criteria:
+- Quickstart instructions are runnable and validated in CI.
+intake_refs:
+- .pm/backlog.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- harness/consumer_smoke.c
+- harness/consumer_smoke_callback.c
+risk_tier: low
+required_evidence:
+- quickstart doc diff
+- quickstart check output
+timebox: not_applicable
+rollback_plan: Revert quickstart checks if they create flaky CI behavior.
+notes:
+- Part of one-bundle T-112..T-117 execution.
+context_refs:
+- .pm/backlog.md
+closed_at: '2026-05-01T04:50:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+close_reason: completed
+completion_evidence:
+- docs/consumer-quickstart-v1.md
+- scripts/check_consumer_quickstart.sh
+
+execution_readiness:
+  objective: Provide runnable consumer quickstart guidance with automated verification.
+  scope:
+  - Add quickstart doc for static/shared paths.
+  - Add reusable quickstart validation script and CI gate.
+  constraints:
+  - Avoid flaky external dependencies.
+  assumptions:
+  - Existing harnesses remain canonical smoke examples.
+  decision_rationale: Reduce integration ambiguity for downstream consumers.
+  alternatives_considered:
+  - Docs-only quickstart without executable check (rejected)
+  dependencies:
+  - T-112
+  acceptance_criteria:
+  - Quickstart script passes and CI runs it.
+  validation_plan:
+  - Execute check_consumer_quickstart.sh locally and in policy job.
+  rollback_risk:
+  - low
+  open_questions:
+  - Should callback quickstart become required no-go in future release policy?

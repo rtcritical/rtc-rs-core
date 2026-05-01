@@ -17,6 +17,7 @@ Move from validated v0 baseline into predictable v0.x iteration with explicit pr
 ### A2. Consumer quickstart bundle
 - Provide minimal examples for static + shared linking per platform.
 - Gate: examples compile in CI smoke jobs.
+- v1 baseline artifact: `docs/consumer-quickstart-v1.md` + `scripts/check_consumer_quickstart.sh`.
 
 ### A3. ABI compatibility policy
 - Define allowed vs breaking changes for `core_v0.h`.
@@ -35,6 +36,7 @@ Move from validated v0 baseline into predictable v0.x iteration with explicit pr
 ### B3. Fuzz/prop tests on core transforms
 - Add lightweight property tests for roundtrip and invariants.
 - Gate: property suite runs in CI policy or dedicated job.
+- v1 baseline artifact: `tests/property_invariants.rs` (deterministic property-style coverage).
 
 ## Milestone C — Delivery confidence and governance (v0.3)
 
@@ -47,6 +49,7 @@ Move from validated v0 baseline into predictable v0.x iteration with explicit pr
 ### C2. API lifecycle notes
 - Add deprecation/versioning notes for post-v0 evolution.
 - Gate: CONTRIBUTING + docs/spec alignment.
+- v1 baseline artifact: `docs/api-lifecycle-v1.md` + CONTRIBUTING linkage.
 
 ---
 

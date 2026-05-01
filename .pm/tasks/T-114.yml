@@ -1,0 +1,79 @@
+schema_version: 2
+task_id: T-114
+title: V1.A5 - Optional prebuilt release wiring (non-blocking)
+epic_id: E-102
+goal_ref: P1
+priority: P1
+status: done
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-05-01T04:35:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+updated_at: '2026-05-01T04:50:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+depends_on:
+- T-113
+scope_in:
+- Add optional prebuilt artifact packaging step (best-effort) to release process.
+- Keep release no-go unchanged for required artifacts.
+scope_out:
+- Cross-OS matrix publication.
+acceptance_criteria:
+- Optional prebuilt generation path documented and invoked in release flow without blocking required artifacts.
+intake_refs:
+- .github/workflows/release.yml
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- scripts/check_packaging_contract.sh
+- docs/release-packaging-contract-v1.md
+risk_tier: medium
+required_evidence:
+- release flow diff
+- policy notes confirming non-blocking behavior
+timebox: not_applicable
+rollback_plan: Disable optional prebuilt step while preserving required release behavior.
+notes:
+- Part of one-bundle T-112..T-117 execution.
+context_refs:
+- .pm/backlog.md
+closed_at: '2026-05-01T04:50:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+close_reason: completed
+completion_evidence:
+- .github/workflows/release.yml
+- scripts/check_packaging_contract.sh
+
+execution_readiness:
+  objective: Wire optional prebuilt release artifact flow without changing required release gates.
+  scope:
+  - Add non-blocking optional prebuilt step in release workflow.
+  - Include manifest and optional asset upload behavior.
+  constraints:
+  - No required-artifact regressions.
+  assumptions:
+  - Release action can ignore unmatched optional assets safely.
+  decision_rationale: Improve convenience while keeping reliability-focused no-go criteria.
+  alternatives_considered:
+  - Require prebuilt assets for all releases now (rejected)
+  dependencies:
+  - T-113
+  acceptance_criteria:
+  - Release workflow includes optional path and remains non-blocking.
+  validation_plan:
+  - Validate workflow diff + packaging checks.
+  rollback_risk:
+  - medium
+  open_questions:
+  - Should optional prebuilt include shared lib artifact in this phase?

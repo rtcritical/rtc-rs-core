@@ -24,3 +24,8 @@
 - Release workflow publishes source/header artifacts and checksums.
 - Release notes are generated pre-publish and must pass category/assignment guards.
 - For v0 branch of work, treat scope as feature-frozen; prefer fixes/hardening/docs unless explicitly re-opening scope.
+
+## API lifecycle guidance
+
+- Follow `docs/api-lifecycle-v1.md` for additive vs breaking change handling.
+- Treat `include/core_v0.h` as stable ABI line; breaking changes require explicit versioned transition planning.

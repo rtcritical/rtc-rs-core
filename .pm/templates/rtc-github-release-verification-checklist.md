@@ -6,6 +6,7 @@
 - [ ] release is non-draft and non-prerelease (unless explicitly intended)
 - [ ] expected assets published
 - [ ] expected packaging contract artifacts published (source, headers, SHA256SUMS)
+- [ ] packaging manifest generated and recorded (`packaging_manifest.json`)
 - [ ] notes contain expected sections/categories
 - [ ] release URL and ID recorded in PM evidence
 - [ ] workflow run URL/ID recorded in PM evidence

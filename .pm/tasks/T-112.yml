@@ -1,0 +1,81 @@
+schema_version: 2
+task_id: T-112
+title: V1.A3 - Packaging matrix implementation and manifest baseline
+epic_id: E-102
+goal_ref: P1
+priority: P1
+status: done
+owner:
+  type: human
+  id: nick
+  run_id: null
+created_at: '2026-05-01T04:35:00Z'
+created_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+updated_at: '2026-05-01T14:30:00Z'
+updated_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+depends_on:
+- T-106
+scope_in:
+- Add optional prebuilt packaging manifest contract and generation path.
+- Keep required v1 source+headers+checksums contract intact.
+scope_out:
+- Multi-platform release infra rollout.
+acceptance_criteria:
+- Packaging docs include optional prebuilt artifact/manifest shape.
+- Packaging script emits manifest with required artifacts and checksums.
+intake_refs:
+- docs/release-packaging-contract-v1.md
+decision_refs:
+- .pm/decisions/open-questions.yml
+evidence_refs:
+- scripts/check_packaging_contract.sh
+- docs/release-packaging-contract-v1.md
+risk_tier: medium
+required_evidence:
+- manifest generation proof
+- packaging gate output
+timebox: not_applicable
+rollback_plan: Revert manifest additions and retain current required artifacts only.
+notes:
+- Part of one-bundle T-112..T-117 execution.
+- Added repository tracking note clarifying dist artifacts are generated/untracked.
+context_refs:
+- .pm/backlog.md
+closed_at: '2026-05-01T04:50:00Z'
+closed_by:
+  type: agent
+  id: clio
+  run_id: matrix-session-2026-05-01
+close_reason: completed
+completion_evidence:
+- scripts/check_packaging_contract.sh
+- docs/release-packaging-contract-v1.md
+
+execution_readiness:
+  objective: Implement packaging manifest baseline while preserving required release artifacts.
+  scope:
+  - Add manifest generation to packaging contract gate.
+  - Update packaging contract docs/checklist references.
+  constraints:
+  - Required release no-go artifacts remain unchanged.
+  assumptions:
+  - Optional prebuilt entries are best-effort and non-blocking.
+  decision_rationale: Improve deterministic packaging inspection without forcing platform matrix rollout.
+  alternatives_considered:
+  - Keep checksum-only metadata (rejected)
+  dependencies:
+  - T-106
+  acceptance_criteria:
+  - Manifest generated and validated in packaging gate.
+  validation_plan:
+  - Run check_packaging_contract.sh and confirm manifest content.
+  rollback_risk:
+  - medium
+  open_questions:
+  - Should manifest schema be promoted to dedicated versioned spec later?

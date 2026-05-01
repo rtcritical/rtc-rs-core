@@ -40,3 +40,11 @@ questions:
     task_id: T-108
     resolved_by: nick
     resolved_at_utc: '2026-04-30T22:40:00Z'
+  - id: OQ-2026-05-01-t112-t117-bundle-scope
+    prompt: "Should v1 continuation execute packaging manifest/quickstart/reliability-property/lifecycle slices in one bundled PR while keeping optional prebuilt artifacts non-blocking?"
+    status: approved
+    decision: yes-bundle-nonblocking-prebuilt
+    rationale: "User explicitly requested one-bundle execution and accepted packaging hiccup handling so long as required release contract remains stable."
+    task_id: T-112
+    resolved_by: nick
+    resolved_at_utc: '2026-05-01T00:12:00Z'

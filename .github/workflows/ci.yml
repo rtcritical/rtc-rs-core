@@ -67,6 +67,8 @@ jobs:
         run: ./scripts/check_abi_compat_policy.py
       - name: Packaging contract gate
         run: ./scripts/check_packaging_contract.sh
+      - name: Consumer quickstart gate
+        run: ./scripts/check_consumer_quickstart.sh
       - name: Release notes generation gate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

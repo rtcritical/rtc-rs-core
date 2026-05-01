@@ -41,6 +41,10 @@ For each release candidate tag:
 3. Validate static consumer path against release commit/toolchain.
 4. Record result evidence in task/release notes before cutover to published release communication.
 
+## Repository tracking note
+
+Artifacts generated under `dist/` (tarballs, checksums, manifest, copied headers, and optional prebuilt outputs) are runtime build/release outputs and are intentionally not tracked in git.
+
 ## Out of scope (T-105 guard)
 
 - CI/release workflow wiring for these checks (handled in T-106).

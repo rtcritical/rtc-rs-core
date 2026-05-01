@@ -14,7 +14,7 @@ created_by:
   type: agent
   id: clio
   run_id: matrix-session-2026-05-01
-updated_at: '2026-05-01T04:50:00Z'
+updated_at: '2026-05-01T14:30:00Z'
 updated_by:
   type: agent
   id: clio
@@ -44,6 +44,7 @@ timebox: not_applicable
 rollback_plan: Revert manifest additions and retain current required artifacts only.
 notes:
 - Part of one-bundle T-112..T-117 execution.
+- Added repository tracking note clarifying dist artifacts are generated/untracked.
 context_refs:
 - .pm/backlog.md
 closed_at: '2026-05-01T04:50:00Z'
